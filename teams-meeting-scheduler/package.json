@@ -2,7 +2,7 @@
   "name": "teams-meeting-scheduler",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://0xjaqbek.github.io/teams-meeting-scheduler",
+  "homepage": "https://0xjaqbek.github.io/teams",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.8.0",
