@@ -8,7 +8,8 @@
       "Bash(firebase functions:list:*)",
       "Bash(firebase deploy:*)",
       "Bash(firebase functions:log:*)",
-      "Bash(firebase functions:delete:*)"
+      "Bash(firebase functions:delete:*)",
+      "Read(//d/teams/.github/workflows/**)"
     ],
     "deny": [],
     "ask": []

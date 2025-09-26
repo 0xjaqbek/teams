@@ -30,8 +30,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: 'meeting-joiner/package-lock.json'
 
     - name: Install Chrome dependencies
       run: |
@@ -50,19 +48,19 @@ jobs:
           libxrandr2 \
           xdg-utils
 
-    - name: Install dependencies
+    - name: Generate package-lock.json
       run: |
-        cd meeting-joiner
-        npm ci
+        cd teams-meeting-scheduler/meeting-joiner
+        npm install
 
     - name: Install Puppeteer browsers
       run: |
-        cd meeting-joiner
+        cd teams-meeting-scheduler/meeting-joiner
         npx puppeteer browsers install chrome
 
     - name: Run meeting joiner
       run: |
-        cd meeting-joiner
+        cd teams-meeting-scheduler/meeting-joiner
         npm start
       env:
         MEETING_ID: ${{ github.event.inputs.meeting_id }}
@@ -72,5 +70,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: meeting-logs-${{ github.run_number }}
-        path: meeting-joiner/logs/
+        path: teams-meeting-scheduler/meeting-joiner/logs/
         retention-days: 7
