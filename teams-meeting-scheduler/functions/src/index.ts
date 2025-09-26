@@ -154,7 +154,7 @@ async function joinTeamsMeeting(meeting: Meeting): Promise<{ success: boolean; e
 
   } catch (error) {
     console.error('Error joining Teams meeting:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   } finally {
     if (browser) {
       await browser.close();
@@ -247,7 +247,7 @@ export const processPendingMeetings = functions.pubsub
 
         await doc.ref.update({
           status: 'failed',
-          errorMessage: error.message,
+          errorMessage: error instanceof Error ? error.message : String(error),
           lastAttempt: admin.firestore.FieldValue.serverTimestamp()
         });
 
@@ -256,7 +256,7 @@ export const processPendingMeetings = functions.pubsub
           meeting.userId,
           'failed',
           'Error during meeting processing',
-          error.message
+          error instanceof Error ? error.message : String(error)
         );
       }
     }
