@@ -23,8 +23,8 @@ googleProvider.setCustomParameters({
   prompt: 'select_account'
 });
 
-// Connect to emulators if in development
-if (process.env.NODE_ENV === 'development' || process.env.REACT_APP_USE_EMULATORS === 'true') {
+// Connect to emulators only when explicitly enabled
+if (process.env.REACT_APP_USE_EMULATORS === 'true') {
   try {
     connectAuthEmulator(auth, 'http://localhost:9099');
     connectFirestoreEmulator(db, 'localhost', 8080);
