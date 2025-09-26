@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-react-app:*)",
+      "Bash(firebase init:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
