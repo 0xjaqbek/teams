@@ -1,0 +1,76 @@
+name: Teams Meeting Joiner
+
+on:
+  schedule:
+    # Run every 5 minutes to check for meetings
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+    # Allow manual trigger for testing
+    inputs:
+      meeting_id:
+        description: 'Specific meeting ID to join (optional)'
+        required: false
+        type: string
+
+env:
+  FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+  FIREBASE_PRIVATE_KEY: ${{ secrets.FIREBASE_PRIVATE_KEY }}
+  FIREBASE_CLIENT_EMAIL: ${{ secrets.FIREBASE_CLIENT_EMAIL }}
+  ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+
+jobs:
+  join-meetings:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'meeting-joiner/package-lock.json'
+
+    - name: Install Chrome dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          chromium-browser \
+          fonts-liberation \
+          libasound2 \
+          libatk-bridge2.0-0 \
+          libdrm2 \
+          libgtk-3-0 \
+          libnspr4 \
+          libnss3 \
+          libxcomposite1 \
+          libxdamage1 \
+          libxrandr2 \
+          xdg-utils
+
+    - name: Install dependencies
+      run: |
+        cd meeting-joiner
+        npm ci
+
+    - name: Install Puppeteer browsers
+      run: |
+        cd meeting-joiner
+        npx puppeteer browsers install chrome
+
+    - name: Run meeting joiner
+      run: |
+        cd meeting-joiner
+        npm start
+      env:
+        MEETING_ID: ${{ github.event.inputs.meeting_id }}
+
+    - name: Upload logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: meeting-logs-${{ github.run_number }}
+        path: meeting-joiner/logs/
+        retention-days: 7

@@ -1,0 +1,23 @@
+{
+  "name": "teams-meeting-joiner",
+  "version": "1.0.0",
+  "description": "Automated Teams meeting joiner using GitHub Actions",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "build": "echo 'No build step required'",
+    "test": "echo 'No tests configured'"
+  },
+  "dependencies": {
+    "puppeteer": "^21.11.0",
+    "firebase-admin": "^11.8.0",
+    "crypto": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.13"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "private": true
+}
