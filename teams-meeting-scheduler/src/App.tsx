@@ -34,7 +34,7 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      <Router>
+      <Router basename="/teams">
         <Auth />
         <Navigation />
         <main className="app-main">
