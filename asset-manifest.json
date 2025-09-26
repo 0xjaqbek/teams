@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/teams-meeting-scheduler/static/css/main.0424ac08.css",
-    "main.js": "/teams-meeting-scheduler/static/js/main.f8589e9d.js",
-    "static/js/453.93bdf197.chunk.js": "/teams-meeting-scheduler/static/js/453.93bdf197.chunk.js",
-    "index.html": "/teams-meeting-scheduler/index.html",
-    "main.0424ac08.css.map": "/teams-meeting-scheduler/static/css/main.0424ac08.css.map",
-    "main.f8589e9d.js.map": "/teams-meeting-scheduler/static/js/main.f8589e9d.js.map",
-    "453.93bdf197.chunk.js.map": "/teams-meeting-scheduler/static/js/453.93bdf197.chunk.js.map"
+    "main.css": "/teams/static/css/main.0424ac08.css",
+    "main.js": "/teams/static/js/main.1143bc37.js",
+    "static/js/453.93bdf197.chunk.js": "/teams/static/js/453.93bdf197.chunk.js",
+    "index.html": "/teams/index.html",
+    "main.0424ac08.css.map": "/teams/static/css/main.0424ac08.css.map",
+    "main.1143bc37.js.map": "/teams/static/js/main.1143bc37.js.map",
+    "453.93bdf197.chunk.js.map": "/teams/static/js/453.93bdf197.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.0424ac08.css",
-    "static/js/main.f8589e9d.js"
+    "static/js/main.1143bc37.js"
   ]
 }
