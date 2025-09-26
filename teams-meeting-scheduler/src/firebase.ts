@@ -12,6 +12,16 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
+// Debug: Log config to check if env vars are loaded
+console.log('Firebase Config:', {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY ? 'SET' : 'MISSING',
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN ? 'SET' : 'MISSING',
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID ? 'SET' : 'MISSING',
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET ? 'SET' : 'MISSING',
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID ? 'SET' : 'MISSING',
+  appId: process.env.REACT_APP_FIREBASE_APP_ID ? 'SET' : 'MISSING'
+});
+
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
