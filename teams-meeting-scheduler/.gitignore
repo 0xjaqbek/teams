@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 /functions/node_modules
+/meeting-joiner/node_modules
 
 # testing
 /coverage
@@ -25,6 +26,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/meeting-joiner/logs/
+*.log
 
 # firebase
 .firebase/
@@ -87,3 +90,23 @@ Desktop.ini
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+
+# Meeting automation specific
+/meeting-joiner/package-lock.json
+/meeting-joiner/logs/
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Puppeteer cache
+.local-chromium/
+.puppeteer_cache/
+
+# Local configuration files with credentials
+local-joiner-config.js
+*-credentials.js
+
+# Meeting screenshots and recordings
+screenshots/
+recordings/
