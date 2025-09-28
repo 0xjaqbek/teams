@@ -16,57 +16,57 @@
     <div id="versionModal" class="version-modal">
         <div class="version-modal-content">
             <div class="version-modal-header">
-                <h2><i class="fas fa-code-branch"></i> Choose Your Version</h2>
-                <p>Select the version that best fits your needs</p>
+                <h2><i class="fas fa-code-branch"></i> Wybierz Swoją Wersję</h2>
+                <p>Wybierz wersję, która najlepiej pasuje do Twoich potrzeb</p>
             </div>
             <div class="version-options">
                 <div class="version-card" data-version="local">
                     <div class="version-icon">
                         <i class="fas fa-desktop"></i>
                     </div>
-                    <h3>Local Version</h3>
-                    <p class="version-subtitle">Simple & Easy Setup</p>
+                    <h3>Wersja Lokalna</h3>
+                    <p class="version-subtitle">Prosta i Szybka Instalacja</p>
                     <ul class="version-features">
-                        <li><i class="fas fa-check"></i> No Firebase setup required</li>
-                        <li><i class="fas fa-check"></i> All data stored locally</li>
-                        <li><i class="fas fa-check"></i> Works offline</li>
-                        <li><i class="fas fa-check"></i> 5-minute setup</li>
+                        <li><i class="fas fa-check"></i> Bez konfiguracji Firebase</li>
+                        <li><i class="fas fa-check"></i> Wszystkie dane lokalnie</li>
+                        <li><i class="fas fa-check"></i> Działa offline</li>
+                        <li><i class="fas fa-check"></i> Instalacja w 5 minut</li>
                     </ul>
                     <button class="version-btn version-btn-primary" onclick="selectVersion('local')">
-                        Choose Local Version
+                        Wybierz Wersję Lokalną
                     </button>
                     <div style="margin-top: 10px;">
                         <a href="https://github.com/0xjaqbek/teams/tree/optional-firebase-local-storage" target="_blank" style="color: #059669; text-decoration: none; font-size: 0.9rem;">
-                            <i class="fab fa-github"></i> View Local Version Branch
+                            <i class="fab fa-github"></i> Zobacz Branch Wersji Lokalnej
                         </a>
                     </div>
-                    <div class="version-badge">Recommended</div>
+                    <div class="version-badge">Rekomendowana</div>
                 </div>
 
                 <div class="version-card" data-version="firebase">
                     <div class="version-icon">
                         <i class="fas fa-cloud"></i>
                     </div>
-                    <h3>Firebase Version</h3>
-                    <p class="version-subtitle">Cloud-powered Features</p>
+                    <h3>Wersja Firebase</h3>
+                    <p class="version-subtitle">Funkcje Chmurowe</p>
                     <ul class="version-features">
-                        <li><i class="fas fa-check"></i> Cloud data synchronization</li>
-                        <li><i class="fas fa-check"></i> Multi-device access</li>
-                        <li><i class="fas fa-check"></i> Team collaboration</li>
-                        <li><i class="fas fa-exclamation-triangle"></i> Requires Firebase setup</li>
+                        <li><i class="fas fa-check"></i> Synchronizacja w chmurze</li>
+                        <li><i class="fas fa-check"></i> Dostęp z wielu urządzeń</li>
+                        <li><i class="fas fa-check"></i> Współpraca zespołowa</li>
+                        <li><i class="fas fa-exclamation-triangle"></i> Wymaga konfiguracji Firebase</li>
                     </ul>
                     <button class="version-btn version-btn-secondary" onclick="selectVersion('firebase')">
-                        Choose Firebase Version
+                        Wybierz Wersję Firebase
                     </button>
                     <div style="margin-top: 10px;">
                         <a href="https://github.com/0xjaqbek/teams/tree/main" target="_blank" style="color: #3b82f6; text-decoration: none; font-size: 0.9rem;">
-                            <i class="fab fa-github"></i> View Firebase Version Branch
+                            <i class="fab fa-github"></i> Zobacz Branch Wersji Firebase
                         </a>
                     </div>
                 </div>
             </div>
             <div class="version-modal-footer">
-                <p><small>You can always switch versions later. This choice will customize the instructions below.</small></p>
+                <p><small>Możesz zawsze zmienić wersję później. Ten wybór dostosuje poniższe instrukcje.</small></p>
             </div>
         </div>
     </div>
@@ -234,7 +234,7 @@
                 <div class="requirement-item">
                     <i class="fas fa-wifi"></i>
                     <h3>Połączenie internetowe</h3>
-                    <p>Stabilne połączenie do Teams i Firebase</p>
+                    <p>Stabilne połączenie tylko do Teams (Firebase opcjonalne w wersji lokalnej)</p>
                 </div>
             </div>
         </div>
@@ -321,7 +321,7 @@
                                             <p>Gotowy do użycia pakiet</p>
                                         </div>
                                     </div>
-                                    <a href="https://github.com/0xjaqbek/teams/archive/refs/heads/main.zip" class="btn btn-success">
+                                    <a href="https://github.com/0xjaqbek/teams/archive/refs/heads/optional-firebase-local-storage.zip" class="btn btn-success">
                                         <i class="fas fa-download"></i>
                                         Pobierz ZIP
                                     </a>
@@ -463,7 +463,46 @@
                                         <i class="fas fa-copy"></i>
                                     </button>
                                 </div>
-                                <p>Otwórz terminal w folderze <code>meeting-joiner</code> i uruchom powyższą komendę</p>
+                                <div class="detailed-steps">
+                                    <p><strong>Szczegółowe instrukcje dla osób początkujących:</strong></p>
+                                    <div class="step-by-step">
+                                        <div class="method">
+                                            <h5><i class="fas fa-windows"></i> Metoda 1: Win + R (Windows)</h5>
+                                            <ol class="detailed-list">
+                                                <li>Wciśnij jednocześnie <kbd>Win</kbd> + <kbd>R</kbd> (klawisz Windows + R)</li>
+                                                <li>W okienku "Uruchom" wpisz: <code>cmd</code></li>
+                                                <li>Wciśnij <kbd>Enter</kbd></li>
+                                                <li>W czarnym oknie terminala wpisz komendę nawigacji:<br>
+                                                    <code>cd "C:\ścieżka\do\projektu\meeting-joiner"</code><br>
+                                                    <small>Zamień "ścieżka\do\projektu" na rzeczywistą lokalizację folderu</small>
+                                                </li>
+                                                <li>Przykład: <code>cd "C:\Users\TwojeImie\Desktop\teams-meeting-scheduler-main\meeting-joiner"</code></li>
+                                                <li>Wciśnij <kbd>Enter</kbd></li>
+                                                <li>Teraz wpisz komendę: <code>node local-joiner.js dashboard</code></li>
+                                                <li>Wciśnij <kbd>Enter</kbd></li>
+                                            </ol>
+                                        </div>
+
+                                        <div class="method">
+                                            <h5><i class="fas fa-folder-open"></i> Metoda 2: Bezpośrednio z folderu (najłatwiejsza)</h5>
+                                            <ol class="detailed-list">
+                                                <li>Otwórz Eksplorator plików (folder żółty na pasku zadań)</li>
+                                                <li>Przejdź do folderu <code>meeting-joiner</code> w pobranym projekcie</li>
+                                                <li>Kliknij <strong>w pusty obszar paska adresu</strong> na górze okna (tam gdzie jest ścieżka)</li>
+                                                <li>Usuń całą ścieżkę i wpisz: <code>cmd</code></li>
+                                                <li>Wciśnij <kbd>Enter</kbd></li>
+                                                <li>Terminal otworzy się automatycznie w odpowiednim folderze!</li>
+                                                <li>Wpisz komendę: <code>node local-joiner.js dashboard</code></li>
+                                                <li>Wciśnij <kbd>Enter</kbd></li>
+                                            </ol>
+                                        </div>
+
+                                        <div class="success-indicator">
+                                            <i class="fas fa-check-circle"></i>
+                                            <p><strong>Sukces!</strong> Jeśli zobaczysz komunikat "Server running on http://localhost:3000" oznacza to, że wszystko działa poprawnie!</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -896,6 +935,66 @@
                         </ol>
                     </div>
                 </div>
+
+                <!-- Local Version Specific FAQ -->
+                <div class="faq-section content-local">
+                    <h3 style="margin: 30px 0 20px 0; color: var(--primary-color);"><i class="fas fa-desktop"></i> Problemy specyficzne dla wersji lokalnej</h3>
+
+                    <div class="faq-item">
+                        <h3><i class="fas fa-question-circle"></i> Nie mogę otworzyć terminala</h3>
+                        <div class="faq-answer">
+                            <p><strong>Rozwiązanie krok po kroku:</strong></p>
+                            <ol>
+                                <li><strong>Sprawdź system:</strong> Naciśnij Win + R, wpisz "winver" i sprawdź wersję Windows</li>
+                                <li><strong>Alternatywna metoda:</strong> Kliknij prawym przyciskiem na przycisk Start → "Windows PowerShell"</li>
+                                <li><strong>W PowerShell:</strong> Użyj tych samych komend co w CMD (działają identycznie)</li>
+                                <li><strong>Jeszcze inna opcja:</strong> Pobierz Windows Terminal z Microsoft Store (nowocześniejsze)</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3><i class="fas fa-question-circle"></i> Dashboard localhost:3000 nie działa</h3>
+                        <div class="faq-answer">
+                            <p><strong>Sprawdź kolejno:</strong></p>
+                            <ol>
+                                <li>Czy terminal z komendą <code>node local-joiner.js dashboard</code> nadal działa</li>
+                                <li>Czy widzisz komunikat "Server running on http://localhost:3000"</li>
+                                <li>Spróbuj odświeżyć stronę (Ctrl + F5)</li>
+                                <li>Sprawdź czy antywirus nie blokuje połączenia lokalnego</li>
+                                <li>Spróbuj inny port: <code>node local-joiner.js dashboard --port 3001</code></li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3><i class="fas fa-question-circle"></i> Dane nie zapisują się lokalnie</h3>
+                        <div class="faq-answer">
+                            <p><strong>Problemy z uprawnieniami do zapisu:</strong></p>
+                            <ol>
+                                <li>Sprawdź czy folder <code>meeting-joiner/data</code> istnieje (jeśli nie, zostanie utworzony automatycznie)</li>
+                                <li>Uruchom terminal jako administrator (kliknij prawym na CMD → "Uruchom jako administrator")</li>
+                                <li>Sprawdź uprawnienia folderu - kliknij prawym na folder → Właściwości → Zabezpieczenia</li>
+                                <li>Alternatywnie: Przenieś cały projekt do folderu Dokumenty</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3><i class="fas fa-question-circle"></i> Automatyzacja nie startuje przy uruchomieniu</h3>
+                        <div class="faq-answer">
+                            <p><strong>Konfiguracja autostartu Windows:</strong></p>
+                            <ol>
+                                <li>Naciśnij Win + R, wpisz <code>shell:startup</code></li>
+                                <li>Utwórz plik .bat z zawartością:<br>
+                                    <code>cd "C:\ścieżka\do\meeting-joiner"<br>node local-joiner.js schedule</code>
+                                </li>
+                                <li>Zapisz jako <code>teams-automation.bat</code> w folderze Startup</li>
+                                <li>System automatycznie uruchomi skrypt przy starcie Windows</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -979,7 +1078,8 @@
                     <ul>
                         <li>Node.js 18+</li>
                         <li>Google Chrome</li>
-                        <li>Konto Firebase (darmowe)</li>
+                        <li class="content-firebase">Konto Firebase (darmowe)</li>
+                        <li class="content-local">Tylko dane lokalne (bez Firebase)</li>
                         <li>Windows/macOS/Linux</li>
                     </ul>
                 </div>
