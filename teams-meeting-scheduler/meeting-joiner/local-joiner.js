@@ -970,43 +970,77 @@ async function joinTeamsMeeting(meeting) {
     ];
 
     let joined = false;
-    for (const selector of joinButtons) {
-      try {
-        // For text-based selectors, use XPath
-        if (selector.includes(':contains(')) {
-          const text = selector.match(/contains\("([^"]+)"\)/)[1];
-          const xpath = `//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZĘĆŁŃÓŚŹŻĄĆ', 'abcdefghijklmnopqrstuvwxyzęćłńóśźżąć'), '${text.toLowerCase()}')]`;
-          const elements = await page.$x(xpath);
-          if (elements.length > 0) {
-            log(`🎯 Found join button with text: "${text}"`);
-            await elements[0].click();
-            log('✅ Clicked join button!');
-            await page.waitForTimeout(5000);
-            await page.screenshot({ path: path.join(logsDir, `step6-after-join-click.png`) });
-            joined = true;
-            break;
+    let attempts = 0;
+    const maxAttempts = 3;
+
+    // Try joining multiple times to handle multi-step join process
+    while (!joined && attempts < maxAttempts) {
+      attempts++;
+      log(`🔄 Join attempt ${attempts}/${maxAttempts}...`);
+
+      for (const selector of joinButtons) {
+        try {
+          // For text-based selectors, use XPath
+          if (selector.includes(':contains(')) {
+            const text = selector.match(/contains\("([^"]+)"\)/)[1];
+            const xpath = `//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZĘĆŁŃÓŚŹŻĄĆ', 'abcdefghijklmnopqrstuvwxyzęćłńóśźżąć'), '${text.toLowerCase()}')]`;
+            const elements = await page.$x(xpath);
+            if (elements.length > 0) {
+              log(`🎯 Found join button with text: "${text}"`);
+              await elements[0].click();
+              log('✅ Clicked join button!');
+              await page.waitForTimeout(3000);
+              await page.screenshot({ path: path.join(logsDir, `step6-join-attempt-${attempts}.png`) });
+
+              // Check if we're now in meeting or need to continue
+              const inMeeting = await page.$('[data-tid="toggle-mute"], [data-tid="toggle-video"], .calling-screen');
+              if (inMeeting) {
+                joined = true;
+                log('🎉 Successfully in meeting!');
+                break;
+              } else {
+                log('📋 May have reached prejoin screen, will try again...');
+                await page.waitForTimeout(2000);
+                break; // Break inner loop to try all selectors again
+              }
+            }
+          } else {
+            // For regular selectors
+            const button = await page.$(selector);
+            if (button) {
+              log(`🎯 Found join button: ${selector}`);
+              await button.click();
+              log('✅ Clicked join button!');
+              await page.waitForTimeout(3000);
+              await page.screenshot({ path: path.join(logsDir, `step6-join-attempt-${attempts}.png`) });
+
+              // Check if we're now in meeting or need to continue
+              const inMeeting = await page.$('[data-tid="toggle-mute"], [data-tid="toggle-video"], .calling-screen');
+              if (inMeeting) {
+                joined = true;
+                log('🎉 Successfully in meeting!');
+                break;
+              } else {
+                log('📋 May have reached prejoin screen, will try again...');
+                await page.waitForTimeout(2000);
+                break; // Break inner loop to try all selectors again
+              }
+            }
           }
-        } else {
-          // For regular selectors
-          const button = await page.$(selector);
-          if (button) {
-            log(`🎯 Found join button: ${selector}`);
-            await button.click();
-            log('✅ Clicked join button!');
-            await page.waitForTimeout(5000);
-            await page.screenshot({ path: path.join(logsDir, `step6-after-join-click.png`) });
-            joined = true;
-            break;
-          }
+        } catch (error) {
+          // Continue trying other selectors
         }
-      } catch (error) {
-        // Continue trying other selectors
+      }
+
+      if (!joined && attempts < maxAttempts) {
+        log(`⏱️  Waiting before attempt ${attempts + 1}...`);
+        await page.waitForTimeout(3000);
       }
     }
 
     if (!joined) {
-      log('⚠️  No join button found, taking screenshot for debugging...');
-      await page.screenshot({ path: path.join(logsDir, `debug-no-join-button.png`) });
+      log('⚠️  No join button found after all attempts, taking screenshot for debugging...');
+      await page.screenshot({ path: path.join(logsDir, `debug-no-join-button-final.png`) });
     }
 
     // Verify we're in the meeting by looking for meeting controls
