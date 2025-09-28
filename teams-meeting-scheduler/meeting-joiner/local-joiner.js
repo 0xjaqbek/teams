@@ -3,44 +3,43 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 
 // Use stealth plugin to hide automation detection
 puppeteer.use(StealthPlugin());
-const admin = require('firebase-admin');
+const DatabaseManager = require('./database-manager.js');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const speech = require('@google-cloud/speech');
+const http = require('http');
+const url = require('url');
+const querystring = require('querystring');
 
-// Configuration - Update these with your credentials
+// Configuration - Update these with your credentials (all optional now!)
 const CONFIG = {
-  FIREBASE_PROJECT_ID: 'student-e6421', // Your Firebase project ID
-  FIREBASE_PRIVATE_KEY: '-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCTy3D/D2sUeji4\nuQHrJdqtDxUD6TdTaL2ih6EQrquRUkdVSWO0+iA0cEvUk3Tygs1X0KOCTxlHSu5h\neu6ikIk+TRyH6OB+qWpSSOq3HsWbrBqdhMP78Yqe5RFAJ3HSZblibZl1XK0WtA3P\nvrKz9Ii3ppEpxC9TVycwLwSt1kLZPF6czbjeS0hU4MIUzxq4LW7WhJDINTfZdai2\nHjzfbKrin9anYNgMq8Rim52aF+dKF/ARIsdGANrmMFXDIuycMbnVRLHUDNhT62GC\nfmJCc0SMqZduktinx32fb666w2V+EtM9puj4shNlI8Squke+bpQMCvN03719CV+4\n+HtSzhN3AgMBAAECggEAI2xznO65H6NbzQqq5w2fqDMhOlq/pAJK0ZXoiPMUtDQg\nXNTGTS5WYbs4sa7WLPok9ZNQXX9P88KF+F9aqyQxgPlCiWDLzhAVJ7vKZjG9814A\n0xhrUQvHyeXliJbrtR4knO7gBT09T1/An7Z5ZqCJ1FrcGEKphTQydF4QpQnh4+cz\nCbfph0LFDxIQ6zJj7eFuHCecEXL2C8UwuHv35bMB4l5GtWOTKlsSvJ5KfRyEC8eM\ncMtjiRn0459GsxlJUpTFdQjhT2Rx2BfXyUewLkqG7cPXAHxACORlbRqveB3kuIMZ\nOeg7YHQRoWXCkcDXwzDaBfkHDmmo1Md886ztk+3BgQKBgQDJSxl06eMQ/9jbfVSc\nHNxY3WPilaqjRVuqHMh7A+eqmRtZoQ2PB9xXDttjMyWd5aKaICKfdctksTbqUQxn\nvo5t2Mz7E2TZPvTEp2+7yyKxceGV204ogr255EPFAymlSdrtaYZwGuhTyn4bJoC6\nvzq8rtubFmjF/y/tfXyRwhgdZwKBgQC79jHl9vHTj9ijbPxukMyOKDtW5CJI+qhL\nsOwkyc5H+TOBVSrse64IORJRCF9UiPify7cB3WsD51SlwHI7669KhcjFi9LvsDe9\nPJbwKdNCly7tnzXQ+09IwkaAQn9mh2dDKfU6/Xq0XhiG6KBlOwliCquUe6h1RJuN\nj3uhlPV/cQKBgQC5Avmm58H4Qe/D7XHy+uPcGcBQ5lcsMfeKZ2ItDu3Dc24b91dK\n+2Kd8d3bU4tjkUjeeGLaRZ5oMinTPCM2x4KJnBbrPmwW8TJv/aVI6fA9P/qjjipM\nOb7AOPnA/qMsdLFwPOl/6HtZaGh38++ltVX7TowyA2rRcTdQBWKVZdxcSQKBgB3L\nBFXDMsmp/1jIKasM4J+X2PAI8TZIJOz6ejPKmRvncDaL3WXmpMtA4JpfjVzE6UPK\n8pMlGZVg0ZYETxcYYIybcBt/8ktzzyH7vKEMwCPJ+vJHTix16TdLNAmYgMErrT6E\nJA7Zpt14HMMllGb3WKFlt5StlSIhYdaqa5pNFizBAoGALyc7b3zMkfBI/Oxbtmu/\noDNrnFpBHXXSeGRJeTaif1ikoA61AMRuN/0uWPndDM+6AjNHL2QEJ/45O9tCL0sg\n8DxyV+kHXGCVPiMvLx1n/U9K5NeR6Q0eKlSUHhchySfskvOF/c4BsrS9IiTVwWKd\npxPhDOk2jaXyRrDYAQBHIKs=\n-----END PRIVATE KEY-----\n', // Your Firebase private key - set this
-  FIREBASE_CLIENT_EMAIL: 'jaqbek.eth@gmail.com', // Your Firebase client email - set this
-  ENCRYPTION_KEY: 'Teams-Meeting-Scheduler-Key-2025', // Your encryption key - set this
-  GOOGLE_API_KEY: 'AIzaSyDuq5HUv_GGc6Pm1aq-lW9Edw2w_SGSPQo' // Add your Google API key
+  // Firebase credentials (OPTIONAL - if not provided, will use local storage)
+  FIREBASE_PROJECT_ID: '', // Your Firebase project ID (leave empty for local storage)
+  FIREBASE_PRIVATE_KEY: '', // Your Firebase private key (leave empty for local storage)
+  FIREBASE_CLIENT_EMAIL: '', // Your Firebase client email (leave empty for local storage)
+
+  // Encryption key for local storage (will be auto-generated if not provided)
+  ENCRYPTION_KEY: 'Teams-Meeting-Scheduler-Key-2025',
+
+  // Google Speech API (OPTIONAL - for transcription)
+  GOOGLE_API_KEY: '' // Add your Google API key for transcription (optional)
 };
 
-// Initialize Firebase Admin (if credentials are provided)
-if (CONFIG.FIREBASE_PRIVATE_KEY && CONFIG.FIREBASE_CLIENT_EMAIL) {
-  const serviceAccount = {
-    type: "service_account",
-    project_id: CONFIG.FIREBASE_PROJECT_ID,
-    private_key: CONFIG.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    client_email: CONFIG.FIREBASE_CLIENT_EMAIL,
-  };
-
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-} else {
-  console.log('⚠️  Firebase credentials not configured - running in demo mode');
+// Load config from user-credentials.json if available
+let userCredentials = null;
+const credentialsPath = path.join(__dirname, 'user-credentials.json');
+if (fs.existsSync(credentialsPath)) {
+  try {
+    userCredentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+    console.log('📄 Loaded user credentials from file');
+  } catch (error) {
+    console.log('⚠️  Error reading user-credentials.json:', error.message);
+  }
 }
 
-let db = null;
-try {
-  db = admin.firestore ? admin.firestore() : null;
-} catch (error) {
-  console.log('⚠️  Firebase not initialized - running in demo mode');
-  db = null;
-}
+// Initialize database manager with automatic Firebase/Local fallback
+const dbManager = new DatabaseManager(CONFIG);
 
 // Encryption helpers
 const algorithm = 'aes-256-cbc';
@@ -118,10 +117,19 @@ class TranscriptionBuffer {
         userName: this.userDisplayName
       };
 
-      // Save to Firebase
-      if (db) {
-        await db.collection('meetingTranscriptions').add(chunkData);
-        log(`✅ Uploaded transcription chunk ${this.chunkNumber} to Firebase (${chunkData.wordCount} words)`);
+      // Save transcription to database (Firebase or local)
+      try {
+        await dbManager.addLog({
+          action: 'transcription',
+          meetingId: chunkData.meetingId,
+          details: `Transcription chunk ${this.chunkNumber}: ${chunkData.text}`,
+          wordCount: chunkData.wordCount,
+          chunkNumber: this.chunkNumber,
+          transcriptionData: chunkData
+        });
+        log(`✅ Uploaded transcription chunk ${this.chunkNumber} to ${dbManager.getBackendType()} (${chunkData.wordCount} words)`);
+      } catch (error) {
+        log(`⚠️ Failed to save transcription: ${error.message}`);
       }
 
       // Reset for next chunk
@@ -1076,35 +1084,42 @@ async function joinTeamsMeeting(meeting) {
 
 // Demo function - you can modify this for testing
 async function runDemo() {
-  // Try to load user credentials from exported file
-  let userCredentials = null;
+  log(`🔍 Running demo mode using ${dbManager.getBackendType()} storage`);
 
+  // Get pending meetings from database
+  let pendingMeetings = [];
   try {
-    if (fs.existsSync('./user-credentials.json')) {
-      const credentialsData = fs.readFileSync('./user-credentials.json', 'utf8');
-      userCredentials = JSON.parse(credentialsData);
-      log('✅ Loaded user credentials from user-credentials.json');
-    }
+    pendingMeetings = await dbManager.getPendingMeetings();
+    log(`📋 Found ${pendingMeetings.length} pending meetings`);
   } catch (error) {
-    log(`⚠️  Could not load user credentials file: ${error.message}`);
+    log(`⚠️ Could not load meetings from ${dbManager.getBackendType()}: ${error.message}`);
+    return;
   }
 
-  if (userCredentials && userCredentials.meetings && userCredentials.meetings.length > 0) {
-    log('🎯 Found pending meetings from dashboard!');
+  if (pendingMeetings.length > 0) {
+    log('🎯 Found pending meetings!');
 
     // Process the first pending meeting
-    const meeting = userCredentials.meetings[0];
+    const meeting = pendingMeetings[0];
+
+    // Get current user for credentials
+    const currentUser = await dbManager.getCurrentUser();
+    if (!currentUser) {
+      log('❌ No current user found in database. Please create a user first.');
+      return;
+    }
+
     const meetingData = {
       id: meeting.id,
-      email: userCredentials.teamsEmail,
-      password: userCredentials.teamsPassword,
+      email: currentUser.teamsEmail,
+      password: currentUser.teamsPassword,
       meetingLink: meeting.meetingLink,
-      userDisplayName: userCredentials.userDisplayName
+      userDisplayName: currentUser.displayName
     };
 
     log(`🚀 Starting Teams meeting automation for meeting: ${meeting.id}`);
     log(`📅 Meeting scheduled for: ${meeting.scheduledTime}`);
-    log(`👤 User: ${userCredentials.userDisplayName} (${userCredentials.teamsEmail})`);
+    log(`👤 User: ${currentUser.displayName} (${currentUser.email})`);
 
     const result = await joinTeamsMeeting(meetingData);
 
@@ -1148,28 +1163,26 @@ const activeMeetings = new Set();
 // Background automation scheduler
 async function startAutomationScheduler() {
   log('🤖 Starting background automation scheduler...');
+  log(`📊 Using ${dbManager.getBackendType()} storage backend`);
   log('⏰ Monitoring for scheduled meetings every 30 seconds');
 
-  // Load user credentials
-  let userCredentials = null;
+  // Check if we have a current user
   try {
-    if (fs.existsSync('./user-credentials.json')) {
-      const credentialsData = fs.readFileSync('./user-credentials.json', 'utf8');
-      userCredentials = JSON.parse(credentialsData);
-      log(`✅ Loaded credentials for ${userCredentials.userDisplayName}`);
-    } else {
-      log('❌ No user-credentials.json found. Please run "Run Local Automation" from the dashboard first.');
+    const currentUser = await dbManager.getCurrentUser();
+    if (!currentUser) {
+      log('❌ No current user found in database. Please create a user first.');
       process.exit(1);
     }
+    log(`✅ Loaded credentials for ${currentUser.displayName} (${currentUser.email})`);
   } catch (error) {
-    log(`❌ Error loading credentials: ${error.message}`);
+    log(`❌ Error accessing ${dbManager.getBackendType()} database: ${error.message}`);
     process.exit(1);
   }
 
   // Check for meetings every 30 seconds
   setInterval(async () => {
     try {
-      await checkAndJoinScheduledMeetings(userCredentials);
+      await checkAndJoinScheduledMeetings();
     } catch (error) {
       log(`⚠️  Error in scheduler: ${error.message}`);
     }
@@ -1180,27 +1193,27 @@ async function startAutomationScheduler() {
   log('📱 Check the dashboard for meeting status updates.');
 }
 
-async function checkAndJoinScheduledMeetings(userCredentials) {
+async function checkAndJoinScheduledMeetings() {
   const now = new Date();
 
-  // Reload credentials to get latest meetings
+  // Get pending meetings from database (Firebase or local)
+  let pendingMeetings = [];
   try {
-    const credentialsData = fs.readFileSync('./user-credentials.json', 'utf8');
-    const latestCredentials = JSON.parse(credentialsData);
-    userCredentials.meetings = latestCredentials.meetings;
+    pendingMeetings = await dbManager.getPendingMeetings();
+    log(`📋 Found ${pendingMeetings.length} pending meetings in ${dbManager.getBackendType()}`);
   } catch (error) {
-    log(`⚠️  Could not reload meetings: ${error.message}`);
+    log(`⚠️ Could not load meetings from ${dbManager.getBackendType()}: ${error.message}`);
+    return;
   }
 
-  if (!userCredentials.meetings || userCredentials.meetings.length === 0) {
+  if (pendingMeetings.length === 0) {
     log(`📅 No pending meetings found. Current time: ${now.toLocaleString()}`);
     return; // No meetings to check
   }
 
-  log(`📋 Checking ${userCredentials.meetings.length} meetings...`);
+  log(`📋 Checking ${pendingMeetings.length} meetings...`);
 
-  for (const meeting of userCredentials.meetings) {
-    if (meeting.status !== 'pending') continue;
+  for (const meeting of pendingMeetings) {
 
     // Check if this meeting is already being processed
     if (activeMeetings.has(meeting.id)) {
@@ -1220,26 +1233,48 @@ async function checkAndJoinScheduledMeetings(userCredentials) {
       // Add to active meetings lock
       activeMeetings.add(meeting.id);
 
+      // Get current user to get credentials
+      const currentUser = await dbManager.getCurrentUser();
+      if (!currentUser) {
+        log(`❌ No current user found for meeting ${meeting.id}`);
+        activeMeetings.delete(meeting.id);
+        continue;
+      }
+
       const meetingData = {
         id: meeting.id,
-        email: userCredentials.teamsEmail,
-        password: userCredentials.teamsPassword,
+        email: currentUser.teamsEmail,
+        password: currentUser.teamsPassword,
         meetingLink: meeting.meetingLink,
-        userDisplayName: userCredentials.userDisplayName
+        userDisplayName: currentUser.displayName
       };
 
       try {
         const result = await joinTeamsMeeting(meetingData);
         if (result.success) {
           log(`✅ Successfully joined meeting ${meeting.id}!`);
-          // Update meeting status in credentials file
-          meeting.status = 'joined';
-          fs.writeFileSync('./user-credentials.json', JSON.stringify(userCredentials, null, 2));
+          // Update meeting status in database
+          await dbManager.updateMeeting(meeting.id, {
+            status: 'joined',
+            joinedAt: new Date()
+          });
         } else {
           log(`❌ Failed to join meeting ${meeting.id}: ${result.error}`);
+          // Update meeting status to failed and increment retry count
+          await dbManager.updateMeeting(meeting.id, {
+            status: 'failed',
+            failureReason: result.error,
+            retryCount: (meeting.retryCount || 0) + 1
+          });
         }
       } catch (error) {
         log(`💥 Error joining meeting ${meeting.id}: ${error.message}`);
+        // Update meeting status to failed
+        await dbManager.updateMeeting(meeting.id, {
+          status: 'failed',
+          failureReason: error.message,
+          retryCount: (meeting.retryCount || 0) + 1
+        });
       } finally {
         // Remove from active meetings lock
         activeMeetings.delete(meeting.id);
@@ -1259,32 +1294,51 @@ const meetingId = args[1];
 if (command === 'schedule' || command === 'monitor') {
   // Start background scheduler
   startAutomationScheduler();
-} else if (meetingId && db) {
+} else if (meetingId) {
   // Join specific meeting by ID
   log(`🔍 Looking up meeting ID: ${meetingId}`);
 
-  db.collection('meetings').doc(meetingId).get()
-    .then(doc => {
-      if (!doc.exists) {
-        log(`❌ Meeting ${meetingId} not found in Firebase`);
+  (async () => {
+    try {
+      const meetings = await dbManager.getMeetings();
+      const meeting = meetings.find(m => m.id === meetingId);
+
+      if (!meeting) {
+        log(`❌ Meeting ${meetingId} not found in ${dbManager.getBackendType()}`);
         process.exit(1);
       }
 
-      const meeting = { id: doc.id, ...doc.data() };
-      return joinTeamsMeeting(meeting);
-    })
-    .then(result => {
+      // Get current user for credentials
+      const currentUser = await dbManager.getCurrentUser();
+      if (!currentUser) {
+        log('❌ No current user found in database. Please create a user first.');
+        process.exit(1);
+      }
+
+      const meetingData = {
+        id: meeting.id,
+        email: currentUser.teamsEmail,
+        password: currentUser.teamsPassword,
+        meetingLink: meeting.meetingLink,
+        userDisplayName: currentUser.displayName
+      };
+
+      const result = await joinTeamsMeeting(meetingData);
+
       if (result.success) {
         log('✅ Meeting joined successfully!');
       } else {
         log(`❌ Failed to join meeting: ${result.error}`);
       }
       process.exit(0);
-    })
-    .catch(error => {
+    } catch (error) {
       log(`💥 Fatal error: ${error.message}`);
       process.exit(1);
-    });
+    }
+  })();
+} else if (command === 'server' || command === 'dashboard') {
+  // Start HTTP server for dashboard
+  startDashboardServer();
 } else {
   // Run demo mode
   runDemo()
@@ -1296,4 +1350,206 @@ if (command === 'schedule' || command === 'monitor') {
       log(`Fatal error: ${error.message}`);
       process.exit(1);
     });
+}
+
+// ===========================
+// HTTP SERVER FOR DASHBOARD
+// ===========================
+
+function startDashboardServer() {
+  const PORT = 3000;
+
+  const server = http.createServer(async (req, res) => {
+    // Enable CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+      res.writeHead(200);
+      res.end();
+      return;
+    }
+
+    const parsedUrl = url.parse(req.url, true);
+    const pathname = parsedUrl.pathname;
+    const method = req.method;
+
+    try {
+      if (pathname === '/api/status') {
+        // Health check endpoint
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          status: 'ok',
+          backend: dbManager.getBackendType(),
+          timestamp: new Date().toISOString()
+        }));
+
+      } else if (pathname === '/api/user' && method === 'GET') {
+        // Get current user
+        const user = await dbManager.getCurrentUser();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(user));
+
+      } else if (pathname === '/api/user' && method === 'POST') {
+        // Create new user
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+          try {
+            const userData = JSON.parse(body);
+            const user = await dbManager.createUser(userData);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(user));
+          } catch (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: error.message }));
+          }
+        });
+
+      } else if (pathname.startsWith('/api/user/') && method === 'PUT') {
+        // Update user
+        const userId = pathname.split('/')[3];
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+          try {
+            const updateData = JSON.parse(body);
+            const user = await dbManager.updateUser(userId, updateData);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(user));
+          } catch (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: error.message }));
+          }
+        });
+
+      } else if (pathname === '/api/meetings' && method === 'GET') {
+        // Get all meetings
+        const meetings = await dbManager.getMeetings();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(meetings));
+
+      } else if (pathname === '/api/meetings' && method === 'POST') {
+        // Create new meeting
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+          try {
+            const meetingData = JSON.parse(body);
+            const meeting = await dbManager.addMeeting(meetingData);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(meeting));
+          } catch (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: error.message }));
+          }
+        });
+
+      } else if (pathname.startsWith('/api/meetings/') && method === 'DELETE') {
+        // Delete meeting
+        const meetingId = pathname.split('/')[3];
+        try {
+          await dbManager.deleteMeeting(meetingId);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true }));
+        } catch (error) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: error.message }));
+        }
+
+      } else if (pathname === '/api/logs' && method === 'GET') {
+        // Get logs
+        const logs = await dbManager.getLogs(100);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(logs));
+
+      } else if (pathname === '/api/stats' && method === 'GET') {
+        // Get statistics
+        const stats = await dbManager.getStats();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(stats));
+
+      } else if (pathname === '/api/export' && method === 'GET') {
+        // Export data
+        if (dbManager.getBackendType() === 'local') {
+          const exportPath = dbManager.storage.exportData();
+          if (exportPath) {
+            const data = JSON.parse(fs.readFileSync(exportPath, 'utf8'));
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(data));
+          } else {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Export failed' }));
+          }
+        } else {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Export only available for local storage' }));
+        }
+
+      } else if (pathname === '/api/import' && method === 'POST') {
+        // Import data
+        if (dbManager.getBackendType() === 'local') {
+          let body = '';
+          req.on('data', chunk => body += chunk);
+          req.on('end', async () => {
+            try {
+              const importData = JSON.parse(body);
+              const tempFile = path.join(__dirname, 'temp-import.json');
+              fs.writeFileSync(tempFile, JSON.stringify(importData, null, 2));
+              const success = dbManager.storage.importData(tempFile);
+              fs.unlinkSync(tempFile);
+
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ success }));
+            } catch (error) {
+              res.writeHead(500, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: error.message }));
+            }
+          });
+        } else {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Import only available for local storage' }));
+        }
+
+      } else if (pathname === '/dashboard' || pathname === '/') {
+        // Serve dashboard HTML
+        const dashboardPath = path.join(__dirname, '..', 'local-dashboard.html');
+        if (fs.existsSync(dashboardPath)) {
+          const html = fs.readFileSync(dashboardPath, 'utf8');
+          res.writeHead(200, { 'Content-Type': 'text/html' });
+          res.end(html);
+        } else {
+          res.writeHead(404, { 'Content-Type': 'text/plain' });
+          res.end('Dashboard file not found');
+        }
+
+      } else {
+        // 404 Not Found
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Endpoint not found' }));
+      }
+
+    } catch (error) {
+      log(`❌ Server error: ${error.message}`);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Internal server error' }));
+    }
+  });
+
+  server.listen(PORT, () => {
+    log(`🌐 Dashboard server started at http://localhost:${PORT}`);
+    log(`📊 Dashboard: http://localhost:${PORT}/dashboard`);
+    log(`🔗 API Base: http://localhost:${PORT}/api`);
+    log(`💾 Using ${dbManager.getBackendType()} storage backend`);
+  });
+
+  server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      log(`❌ Port ${PORT} is already in use. Stop any other processes using this port.`);
+    } else {
+      log(`❌ Server error: ${error.message}`);
+    }
+    process.exit(1);
+  });
 }

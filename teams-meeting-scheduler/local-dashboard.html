@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams Meeting Automation - Local Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-local { background: #10B981; }
+        .status-firebase { background: #F59E0B; }
+        .status-error { background: #EF4444; }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #f1f5f9;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: #4facfe;
+            border-bottom-color: #4facfe;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .meeting-form {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .meetings-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .meeting-card {
+            background: white;
+            border: 2px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .meeting-card:hover {
+            border-color: #4facfe;
+            transform: translateY(-2px);
+        }
+
+        .meeting-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .meeting-info h3 {
+            color: #1f2937;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .meeting-info p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-joined { background: #d1fae5; color: #065f46; }
+        .status-failed { background: #fee2e2; color: #991b1b; }
+        .status-retrying { background: #dbeafe; color: #1e40af; }
+
+        .meeting-link {
+            word-break: break-all;
+            color: #4facfe;
+            text-decoration: none;
+        }
+
+        .meeting-link:hover {
+            text-decoration: underline;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .user-form {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> Teams Meeting Automation</h1>
+            <p>Local Dashboard - No Firebase Required</p>
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Checking connection...</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </button>
+                <button class="tab-button" onclick="switchTab('meetings')">
+                    <i class="fas fa-calendar"></i> Meetings
+                </button>
+                <button class="tab-button" onclick="switchTab('settings')">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+                <button class="tab-button" onclick="switchTab('logs')">
+                    <i class="fas fa-file-alt"></i> Logs
+                </button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalMeetings">0</div>
+                        <div class="stat-label">Total Meetings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingMeetings">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="completedMeetings">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="failedMeetings">0</div>
+                        <div class="stat-label">Failed</div>
+                    </div>
+                </div>
+
+                <div class="meeting-form">
+                    <h3><i class="fas fa-plus"></i> Schedule New Meeting</h3>
+                    <form id="meetingForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="meetingLink">Teams Meeting Link</label>
+                                <input type="url" id="meetingLink" placeholder="https://teams.microsoft.com/l/meetup-join/..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="scheduledTime">Scheduled Time</label>
+                                <input type="datetime-local" id="scheduledTime" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-calendar-plus"></i> Schedule Meeting
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Meetings Tab -->
+            <div id="meetings" class="tab-content">
+                <h2><i class="fas fa-calendar"></i> Your Meetings</h2>
+                <div id="meetingsList" class="meetings-list">
+                    <!-- Meetings will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <h2><i class="fas fa-user"></i> User Settings</h2>
+                <div class="user-form">
+                    <form id="userForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="displayName">Display Name</label>
+                                <input type="text" id="displayName" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" placeholder="your@email.com" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="teamsEmail">Teams Email</label>
+                                <input type="email" id="teamsEmail" placeholder="Teams account email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="teamsPassword">Teams Password</label>
+                                <input type="password" id="teamsPassword" placeholder="Teams account password" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                    </form>
+                </div>
+
+                <div class="meeting-form" style="margin-top: 30px;">
+                    <h3><i class="fas fa-download"></i> Export/Import Data</h3>
+                    <p style="margin-bottom: 15px; color: #6b7280;">Backup your meetings and settings</p>
+                    <button onclick="exportData()" class="btn" style="margin-right: 10px;">
+                        <i class="fas fa-download"></i> Export Data
+                    </button>
+                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData()">
+                    <button onclick="document.getElementById('importFile').click()" class="btn">
+                        <i class="fas fa-upload"></i> Import Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Logs Tab -->
+            <div id="logs" class="tab-content">
+                <h2><i class="fas fa-file-alt"></i> Activity Logs</h2>
+                <div id="logsList">
+                    <!-- Logs will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let meetings = [];
+        let logs = [];
+        let currentUser = null;
+        let stats = { total: 0, pending: 0, completed: 0, failed: 0 };
+
+        // Local storage API endpoint (will be served by local-joiner.js)
+        const API_BASE = 'http://localhost:3000/api';
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkConnection();
+            loadData();
+
+            // Set default datetime to now + 1 hour
+            const now = new Date();
+            now.setHours(now.getHours() + 1);
+            document.getElementById('scheduledTime').value = now.toISOString().slice(0, 16);
+
+            // Setup form handlers
+            document.getElementById('meetingForm').addEventListener('submit', handleMeetingSubmit);
+            document.getElementById('userForm').addEventListener('submit', handleUserSubmit);
+        });
+
+        // Check connection to local API
+        async function checkConnection() {
+            try {
+                const response = await fetch(`${API_BASE}/status`);
+                if (response.ok) {
+                    const data = await response.json();
+                    updateStatus('local', `Connected to ${data.backend} storage`);
+                } else {
+                    throw new Error('API not responding');
+                }
+            } catch (error) {
+                updateStatus('error', 'Local API not running. Please start the automation script.');
+                showAlert('Make sure to run "node local-joiner.js" to start the local server.', 'error');
+            }
+        }
+
+        // Update connection status
+        function updateStatus(type, text) {
+            const dot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+
+            dot.className = `status-dot status-${type}`;
+            statusText.textContent = text;
+        }
+
+        // Load all data
+        async function loadData() {
+            await Promise.all([
+                loadUser(),
+                loadMeetings(),
+                loadLogs(),
+                loadStats()
+            ]);
+        }
+
+        // Load current user
+        async function loadUser() {
+            try {
+                const response = await fetch(`${API_BASE}/user`);
+                if (response.ok) {
+                    currentUser = await response.json();
+                    if (currentUser) {
+                        populateUserForm(currentUser);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user:', error);
+            }
+        }
+
+        // Load meetings
+        async function loadMeetings() {
+            try {
+                const response = await fetch(`${API_BASE}/meetings`);
+                if (response.ok) {
+                    meetings = await response.json();
+                    renderMeetings();
+                }
+            } catch (error) {
+                console.error('Error loading meetings:', error);
+            }
+        }
+
+        // Load logs
+        async function loadLogs() {
+            try {
+                const response = await fetch(`${API_BASE}/logs`);
+                if (response.ok) {
+                    logs = await response.json();
+                    renderLogs();
+                }
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            }
+        }
+
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                if (response.ok) {
+                    stats = await response.json();
+                    renderStats();
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Render statistics
+        function renderStats() {
+            document.getElementById('totalMeetings').textContent = stats.total || 0;
+            document.getElementById('pendingMeetings').textContent = stats.pending || 0;
+            document.getElementById('completedMeetings').textContent = stats.completed || 0;
+            document.getElementById('failedMeetings').textContent = stats.failed || 0;
+        }
+
+        // Render meetings list
+        function renderMeetings() {
+            const container = document.getElementById('meetingsList');
+
+            if (meetings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <h3>No meetings scheduled</h3>
+                        <p>Schedule your first meeting from the Dashboard tab</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = meetings.map(meeting => `
+                <div class="meeting-card">
+                    <div class="meeting-header">
+                        <div class="meeting-info">
+                            <h3>Meeting - ${formatDateTime(meeting.scheduledTime)}</h3>
+                            <p>Created: ${formatDateTime(meeting.createdAt)}</p>
+                        </div>
+                        <span class="status-badge status-${meeting.status}">${meeting.status}</span>
+                    </div>
+                    <div class="meeting-details">
+                        <p><strong>Link:</strong> <a href="${meeting.meetingLink}" target="_blank" class="meeting-link">${meeting.meetingLink}</a></p>
+                        ${meeting.retryCount ? `<p><strong>Retry Count:</strong> ${meeting.retryCount}</p>` : ''}
+                        ${meeting.failureReason ? `<p style="color: #ef4444;"><strong>Error:</strong> ${meeting.failureReason}</p>` : ''}
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button onclick="deleteMeeting('${meeting.id}')" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render logs
+        function renderLogs() {
+            const container = document.getElementById('logsList');
+
+            if (logs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-file-alt"></i>
+                        <h3>No logs yet</h3>
+                        <p>Activity logs will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = logs.map(log => `
+                <div class="meeting-card">
+                    <div class="meeting-header">
+                        <div class="meeting-info">
+                            <h3>${log.action || 'Activity'}</h3>
+                            <p>${formatDateTime(log.timestamp)}</p>
+                        </div>
+                    </div>
+                    <p>${log.message || log.details || 'No details available'}</p>
+                </div>
+            `).join('');
+        }
+
+        // Handle meeting form submission
+        async function handleMeetingSubmit(e) {
+            e.preventDefault();
+
+            if (!currentUser) {
+                showAlert('Please set up your user settings first!', 'error');
+                switchTab('settings');
+                return;
+            }
+
+            const formData = new FormData(e.target);
+            const meetingData = {
+                meetingLink: formData.get('meetingLink') || document.getElementById('meetingLink').value,
+                scheduledTime: formData.get('scheduledTime') || document.getElementById('scheduledTime').value,
+                userId: currentUser.uid
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/meetings`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(meetingData)
+                });
+
+                if (response.ok) {
+                    showAlert('Meeting scheduled successfully!', 'success');
+                    e.target.reset();
+
+                    // Set next default time
+                    const now = new Date();
+                    now.setHours(now.getHours() + 1);
+                    document.getElementById('scheduledTime').value = now.toISOString().slice(0, 16);
+
+                    loadData();
+                } else {
+                    throw new Error('Failed to schedule meeting');
+                }
+            } catch (error) {
+                showAlert('Error scheduling meeting: ' + error.message, 'error');
+            }
+        }
+
+        // Handle user form submission
+        async function handleUserSubmit(e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const userData = {
+                displayName: formData.get('displayName') || document.getElementById('displayName').value,
+                email: formData.get('email') || document.getElementById('email').value,
+                teamsEmail: formData.get('teamsEmail') || document.getElementById('teamsEmail').value,
+                teamsPassword: formData.get('teamsPassword') || document.getElementById('teamsPassword').value
+            };
+
+            try {
+                const method = currentUser ? 'PUT' : 'POST';
+                const url = currentUser ? `${API_BASE}/user/${currentUser.uid}` : `${API_BASE}/user`;
+
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                if (response.ok) {
+                    showAlert('User settings saved successfully!', 'success');
+                    loadUser();
+                } else {
+                    throw new Error('Failed to save user settings');
+                }
+            } catch (error) {
+                showAlert('Error saving settings: ' + error.message, 'error');
+            }
+        }
+
+        // Delete meeting
+        async function deleteMeeting(meetingId) {
+            if (!confirm('Are you sure you want to delete this meeting?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/meetings/${meetingId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert('Meeting deleted successfully!', 'success');
+                    loadData();
+                } else {
+                    throw new Error('Failed to delete meeting');
+                }
+            } catch (error) {
+                showAlert('Error deleting meeting: ' + error.message, 'error');
+            }
+        }
+
+        // Export data
+        async function exportData() {
+            try {
+                const response = await fetch(`${API_BASE}/export`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `teams-automation-backup-${new Date().toISOString().split('T')[0]}.json`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showAlert('Data exported successfully!', 'success');
+                }
+            } catch (error) {
+                showAlert('Error exporting data: ' + error.message, 'error');
+            }
+        }
+
+        // Import data
+        async function importData() {
+            const file = document.getElementById('importFile').files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const data = JSON.parse(text);
+
+                const response = await fetch(`${API_BASE}/import`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showAlert('Data imported successfully!', 'success');
+                    loadData();
+                } else {
+                    throw new Error('Failed to import data');
+                }
+            } catch (error) {
+                showAlert('Error importing data: ' + error.message, 'error');
+            }
+        }
+
+        // Populate user form
+        function populateUserForm(user) {
+            document.getElementById('displayName').value = user.displayName || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('teamsEmail').value = user.teamsEmail || '';
+            // Don't populate password for security
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Format datetime
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString();
+        }
+
+        // Show alert
+        function showAlert(message, type = 'info') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+
+            document.querySelector('.main-content').insertBefore(alertDiv, document.querySelector('.tabs'));
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Auto-refresh data every 30 seconds
+        setInterval(loadData, 30000);
+    </script>
+</body>
+</html>
