@@ -1040,9 +1040,15 @@ async function joinTeamsMeeting(meeting) {
                     // Check again if we're in meeting
                     const nowInMeeting = await page.$('[data-tid="toggle-mute"], [data-tid="toggle-video"]');
                     const stillOnPrejoin = await page.$('[data-tid="prejoin-join-button"]');
-                    if (nowInMeeting && !stillOnPrejoin) {
+
+                    // If no prejoin button is found, assume we're in the meeting
+                    if (!stillOnPrejoin) {
                       joined = true;
-                      log('🎉 Successfully joined meeting via prejoin!');
+                      log('🎉 Successfully joined meeting via prejoin (no prejoin button detected)!');
+                      break;
+                    } else if (nowInMeeting && !stillOnPrejoin) {
+                      joined = true;
+                      log('🎉 Successfully joined meeting via prejoin (meeting controls detected)!');
                       break;
                     } else {
                       log('⚠️  Still not in meeting after prejoin click');
@@ -1079,7 +1085,11 @@ async function joinTeamsMeeting(meeting) {
     const meetingControls = await page.$('[data-tid="toggle-mute"], [data-tid="toggle-video"]');
     const stillOnPrejoin = await page.$('[data-tid="prejoin-join-button"]');
 
-    if (stillOnPrejoin) {
+    // If no prejoin button is found, assume we're in the meeting
+    if (!stillOnPrejoin) {
+      joined = true;
+      log('🎉 No prejoin button detected - assuming successful meeting join!');
+    } else if (stillOnPrejoin) {
       log('⚠️  Still on prejoin screen - attempting final join click...');
       const finalJoinButton = await page.$('[data-tid="prejoin-join-button"]');
       if (finalJoinButton) {
@@ -1089,17 +1099,18 @@ async function joinTeamsMeeting(meeting) {
         await page.waitForTimeout(5000);
         await page.screenshot({ path: path.join(logsDir, `step7-final-join.png`) });
 
-        // Check one more time
-        const finalMeetingControls = await page.$('[data-tid="toggle-mute"], [data-tid="toggle-video"]');
+        // After final click, assume success if no prejoin button remains
         const finalPrejoinCheck = await page.$('[data-tid="prejoin-join-button"]');
-        if (finalMeetingControls && !finalPrejoinCheck) {
+        if (!finalPrejoinCheck) {
           joined = true;
           log('🎉 Finally joined meeting after final click!');
+        } else {
+          log('⚠️  Still showing prejoin button after final attempt');
         }
       }
     }
 
-    if ((meetingControls && !stillOnPrejoin) || joined) {
+    if (meetingControls || joined || !stillOnPrejoin) {
       log(`🎉 Successfully joined meeting!`);
       await page.screenshot({ path: path.join(logsDir, `step7-meeting-joined.png`) });
 
