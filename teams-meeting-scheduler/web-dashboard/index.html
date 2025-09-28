@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Automatyzacji Spotkań Teams</title>
+    <title>Panel Automatyzacji Spotkań Teams - Wersja Lokalna</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -15,17 +15,12 @@
             <div class="header-content">
                 <div class="logo">
                     <i class="fas fa-robot"></i>
-                    <h1>Teams Auto-Join</h1>
+                    <h1>Teams Auto-Join - Wersja Lokalna</h1>
+                    <small>Bez Firebase - wszystko działa lokalnie!</small>
                 </div>
-                <div class="user-info" id="userInfo" style="display: none;">
-                    <img id="userAvatar" class="user-avatar" src="" alt="User">
-                    <div class="user-details">
-                        <span id="userDisplayName">User Name</span>
-                        <small id="userEmail">user@example.com</small>
-                    </div>
-                    <button class="btn-icon" onclick="signOut()" title="Wyloguj">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
+                <div class="local-version-badge">
+                    <i class="fas fa-desktop"></i>
+                    <span>Wersja Lokalna</span>
                 </div>
                 <div class="status-badge" id="statusBadge">
                     <i class="fas fa-circle"></i>
@@ -40,20 +35,20 @@
             <section class="quick-actions">
                 <h2>Szybkie akcje</h2>
                 <div class="action-grid">
-                    <button class="action-btn primary" onclick="runLocalAutomation()">
+                    <button class="action-btn primary" onclick="downloadConfigFile()">
                         <i class="fas fa-download"></i>
                         <span>Pobierz plik konfiguracyjny</span>
-                        <small>Utworzy plik user-credentials.json do uruchomienia automatyzacji na komputerze</small>
+                        <small>Tworzy plik user-credentials.json gotowy do użycia</small>
                     </button>
                     <button class="action-btn tertiary" onclick="openMeetingScheduler()">
                         <i class="fas fa-calendar-plus"></i>
                         <span>Zaplanuj spotkanie</span>
                         <small>Dodaj nowe spotkanie Teams do automatycznego dołączenia</small>
                     </button>
-                    <button class="action-btn success" onclick="openProfileSettings()">
+                    <button class="action-btn success" onclick="openSimpleSettings()">
                         <i class="fas fa-user-cog"></i>
-                        <span>Ustawienia konta Teams</span>
-                        <small>Wprowadź email i hasło do konta Microsoft Teams</small>
+                        <span>Dane logowania Teams</span>
+                        <small>Dodaj swoje dane Microsoft Teams (przechowywane lokalnie)</small>
                     </button>
                     <button class="action-btn quaternary" onclick="viewLogs()">
                         <i class="fas fa-file-text"></i>
@@ -62,8 +57,8 @@
                     </button>
                     <button class="action-btn info" onclick="openModal('instructionsModal')">
                         <i class="fas fa-question-circle"></i>
-                        <span>Instrukcja obsługi</span>
-                        <small>Przewodnik krok po kroku dla użytkowników</small>
+                        <span>Instrukcja dla początkujących</span>
+                        <small>Szczegółowy przewodnik krok po kroku z obrazkami</small>
                     </button>
                 </div>
             </section>
@@ -199,52 +194,53 @@
             </div>
         </div>
 
-        <!-- Authentication Modal -->
-        <div class="modal" id="authModal">
+        <!-- Simple Local Settings Modal -->
+        <div class="modal" id="simpleSettingsModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 id="authModalTitle">Zaloguj się</h3>
-                    <button class="modal-close" onclick="closeModal('authModal')">
+                    <h3>Dane logowania Microsoft Teams</h3>
+                    <button class="modal-close" onclick="closeModal('simpleSettingsModal')">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="auth-tabs">
-                        <button class="auth-tab active" onclick="switchAuthTab('signin')">Zaloguj się</button>
-                        <button class="auth-tab" onclick="switchAuthTab('signup')">Zarejestruj się</button>
+                    <div class="local-info-banner">
+                        <i class="fas fa-shield-alt"></i>
+                        <div>
+                            <strong>Bezpieczeństwo danych</strong>
+                            <p>Wszystkie dane są przechowywane tylko lokalnie na Twoim komputerze. Żadne informacje nie są wysyłane do internetu.</p>
+                        </div>
                     </div>
 
-                    <form id="authForm">
+                    <form id="localSettingsForm">
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="authEmail" placeholder="twoj.email@example.com" required>
+                            <label><i class="fas fa-user"></i> Twoje imię</label>
+                            <input type="text" id="localDisplayName" placeholder="np. Jan Kowalski" required>
+                            <small>Będzie używane w logach automatyzacji</small>
                         </div>
+
                         <div class="form-group">
-                            <label>Hasło</label>
-                            <input type="password" id="authPassword" placeholder="Hasło" required>
-                        </div>
-                        <div class="form-group" id="confirmPasswordGroup" style="display: none;">
-                            <label>Potwierdź hasło</label>
-                            <input type="password" id="authConfirmPassword" placeholder="Potwierdź hasło">
+                            <label><i class="fas fa-envelope"></i> Email Microsoft Teams</label>
+                            <input type="email" id="localTeamsEmail" placeholder="jan.kowalski@firma.com" required>
+                            <small>Email którego używasz do logowania w Teams</small>
                         </div>
 
-                        <div class="auth-actions">
-                            <button type="submit" class="btn primary full-width" id="authSubmitBtn">
-                                Zaloguj się
-                            </button>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Hasło Microsoft Teams</label>
+                            <input type="password" id="localTeamsPassword" placeholder="Twoje hasło Teams" required>
+                            <small>Hasło zostanie zaszyfrowane przed zapisaniem</small>
                         </div>
 
-                        <div class="auth-divider">
-                            <span>lub</span>
+                        <div class="form-group">
+                            <label><i class="fas fa-microphone"></i> Google Speech API Key (opcjonalne)</label>
+                            <input type="text" id="localGoogleApiKey" placeholder="AIzaSy...">
+                            <small>Tylko jeśli chcesz transkrypcję na żywo. Zostaw puste jeśli nie masz.</small>
                         </div>
-
-                        <button type="button" class="btn secondary full-width" onclick="signInWithGoogle()">
-                            <i class="fab fa-google"></i>
-                            Kontynuuj z Google
-                        </button>
                     </form>
-
-                    <div id="authError" class="auth-error" style="display: none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn secondary" onclick="closeModal('simpleSettingsModal')">Anuluj</button>
+                    <button class="btn primary" onclick="saveLocalSettings()">Zapisz dane</button>
                 </div>
             </div>
         </div>
@@ -307,62 +303,146 @@
                 </div>
                 <div class="modal-body">
                     <div class="instructions-content">
-                        <div class="instruction-step">
-                            <h4><i class="fas fa-download"></i> Krok 1: Zainstaluj wymagane oprogramowanie</h4>
-                            <p><strong>A) Zainstaluj Node.js:</strong></p>
-                            <ul>
-                                <li>Przejdź na stronę <a href="https://nodejs.org" target="_blank">https://nodejs.org</a></li>
-                                <li>Pobierz wersję LTS (Long Term Support) - zalecana</li>
-                                <li>Uruchom pobrany plik i postępuj zgodnie z instrukcjami instalatora</li>
-                                <li>Po instalacji otwórz Command Prompt i wpisz <code>node --version</code> aby sprawdzić instalację</li>
-                            </ul>
-                            <p><strong>B) Zainstaluj Google Chrome:</strong></p>
-                            <ul>
-                                <li>Przejdź na stronę <a href="https://www.google.com/chrome" target="_blank">https://www.google.com/chrome</a></li>
-                                <li>Pobierz i zainstaluj najnowszą wersję Chrome</li>
-                                <li>Upewnij się, że masz konto Microsoft Teams w Chrome (zalecane)</li>
-                            </ul>
+                        <div class="local-version-info">
+                            <h4><i class="fas fa-desktop"></i> Instrukcja dla wersji lokalnej</h4>
+                            <p>Ta wersja nie wymaga kont Firebase ani Google Cloud - wszystko działa lokalnie na Twoim komputerze!</p>
                         </div>
 
                         <div class="instruction-step">
-                            <h4><i class="fas fa-user-plus"></i> Krok 2: Załóż konto</h4>
-                            <p>Zaloguj się lub zarejestruj używając swojego adresu email. Możesz też skorzystać z konta Google.</p>
+                            <h4><i class="fas fa-download"></i> Krok 1: Zainstaluj Node.js</h4>
+                            <div class="step-details">
+                                <p><strong>Co to jest Node.js?</strong> To program potrzebny do uruchomienia automatyzacji.</p>
+                                <ol>
+                                    <li>Kliknij tutaj: <a href="https://nodejs.org" target="_blank" class="download-link">Pobierz Node.js</a></li>
+                                    <li>Na stronie kliknij duży zielony przycisk z napisem "LTS" (zalecane)</li>
+                                    <li>Poczekaj aż plik się pobierze (około 30MB)</li>
+                                    <li>Kliknij dwukrotnie na pobrany plik i postępuj zgodnie z instrukcjami</li>
+                                    <li><strong>Sprawdź instalację:</strong> Naciśnij Win+R, wpisz <code>cmd</code>, naciśnij Enter</li>
+                                    <li>W czarnym oknie wpisz: <code>node --version</code> i naciśnij Enter</li>
+                                    <li>Jeśli zobaczysz numer wersji (np. v18.17.0) - instalacja udana! ✅</li>
+                                </ol>
+                            </div>
                         </div>
 
                         <div class="instruction-step">
-                            <h4><i class="fas fa-cog"></i> Krok 3: Ustaw dane do Teams</h4>
-                            <p>Kliknij "Ustawienia konta Teams" i wprowadź email oraz hasło do Microsoft Teams. Te dane są bezpiecznie szyfrowane.</p>
+                            <h4><i class="fas fa-chrome"></i> Krok 2: Sprawdź Google Chrome</h4>
+                            <div class="step-details">
+                                <p><strong>Dlaczego Chrome?</strong> Automatyzacja steruje przeglądarką, aby dołączyć do Teams.</p>
+                                <ol>
+                                    <li>Otwórz Google Chrome (jeśli nie masz, pobierz z <a href="https://www.google.com/chrome" target="_blank">google.com/chrome</a>)</li>
+                                    <li><strong>Ważne:</strong> Zaloguj się do Microsoft Teams w Chrome</li>
+                                    <li>Wejdź na <a href="https://teams.microsoft.com" target="_blank">teams.microsoft.com</a> i sprawdź czy możesz się zalogować</li>
+                                    <li>Jeśli Teams działa w przeglądarce - wszystko gotowe! ✅</li>
+                                </ol>
+                            </div>
                         </div>
 
                         <div class="instruction-step">
-                            <h4><i class="fas fa-calendar-plus"></i> Krok 4: Zaplanuj spotkanie</h4>
-                            <p>Użyj przycisku "Zaplanuj spotkanie" aby dodać link do spotkania Teams wraz z datą i godziną.</p>
+                            <h4><i class="fas fa-user-cog"></i> Krok 3: Wprowadź swoje dane</h4>
+                            <div class="step-details">
+                                <p><strong>Co wprowadzić?</strong> Dane do logowania w Microsoft Teams.</p>
+                                <ol>
+                                    <li>Kliknij przycisk <strong>"Dane logowania Teams"</strong> w tym oknie</li>
+                                    <li>Wprowadź swoje imię (np. "Jan Kowalski")</li>
+                                    <li>Wprowadź email używany w Teams (np. "jan.kowalski@firma.com")</li>
+                                    <li>Wprowadź hasło do Teams</li>
+                                    <li>Kliknij "Zapisz dane"</li>
+                                    <li><strong>Bezpieczeństwo:</strong> Dane są szyfrowane i przechowywane tylko na Twoim komputerze</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="instruction-step">
+                            <h4><i class="fas fa-calendar-plus"></i> Krok 4: Dodaj spotkanie</h4>
+                            <div class="step-details">
+                                <p><strong>Jak dodać spotkanie?</strong> Skopiuj link z Teams i ustaw czas.</p>
+                                <ol>
+                                    <li>Kliknij <strong>"Zaplanuj spotkanie"</strong></li>
+                                    <li>Skopiuj link do spotkania z Teams (zaczyna się od https://teams.microsoft.com/l/meetup-join/...)</li>
+                                    <li>Wklej link w pole "Link do spotkania Teams"</li>
+                                    <li>Ustaw datę i godzinę spotkania</li>
+                                    <li>Kliknij "Zaplanuj spotkanie"</li>
+                                </ol>
+                            </div>
                         </div>
 
                         <div class="instruction-step">
                             <h4><i class="fas fa-download"></i> Krok 5: Pobierz plik konfiguracyjny</h4>
-                            <p>Kliknij "Pobierz plik konfiguracyjny" aby utworzyć plik user-credentials.json z Twoimi ustawieniami.</p>
+                            <div class="step-details">
+                                <p><strong>Co to za plik?</strong> Zawiera wszystkie Twoje ustawienia w formacie zrozumiałym dla automatyzacji.</p>
+                                <ol>
+                                    <li>Kliknij <strong>"Pobierz plik konfiguracyjny"</strong></li>
+                                    <li>Plik "user-credentials.json" zostanie pobrany do folderu Pobrane</li>
+                                    <li>Skopiuj ten plik do folderu "meeting-joiner" w pobranym projekcie</li>
+                                    <li>Sprawdź czy plik jest w odpowiednim miejscu</li>
+                                </ol>
+                            </div>
                         </div>
 
                         <div class="instruction-step">
-                            <h4><i class="fas fa-desktop"></i> Krok 6: Uruchom automatyzację na komputerze</h4>
-                            <p>Skopiuj pobrany plik do folderu meeting-joiner i uruchom automatyzację poleceniem:</p>
-                            <code>node local-joiner.js schedule</code>
+                            <h4><i class="fas fa-terminal"></i> Krok 6: Uruchom automatyzację</h4>
+                            <div class="step-details">
+                                <p><strong>Jak uruchomić?</strong> Szczegółowe instrukcje otwierania terminala.</p>
+                                <div class="terminal-methods">
+                                    <div class="method">
+                                        <h5>Metoda 1: Win + R</h5>
+                                        <ol>
+                                            <li>Naciśnij <kbd>Win</kbd> + <kbd>R</kbd></li>
+                                            <li>Wpisz: <code>cmd</code></li>
+                                            <li>Naciśnij Enter</li>
+                                            <li>Wpisz: <code>cd "ścieżka\\do\\meeting-joiner"</code></li>
+                                            <li>Naciśnij Enter</li>
+                                            <li>Wpisz: <code>node local-joiner.js schedule</code></li>
+                                            <li>Naciśnij Enter</li>
+                                        </ol>
+                                    </div>
+                                    <div class="method">
+                                        <h5>Metoda 2: Z folderu (łatwiejsza)</h5>
+                                        <ol>
+                                            <li>Otwórz folder "meeting-joiner"</li>
+                                            <li>Kliknij w pasek adresu (tam gdzie jest ścieżka)</li>
+                                            <li>Usuń wszystko i wpisz: <code>cmd</code></li>
+                                            <li>Naciśnij Enter</li>
+                                            <li>Wpisz: <code>node local-joiner.js schedule</code></li>
+                                            <li>Naciśnij Enter</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="instruction-step">
-                            <h4><i class="fas fa-check-circle"></i> Gotowe!</h4>
-                            <p>System będzie automatycznie dołączał do zaplanowanych spotkań Teams w odpowiednim czasie.</p>
+                        <div class="instruction-step success">
+                            <h4><i class="fas fa-check-circle"></i> Gotowe! Automatyzacja działa</h4>
+                            <div class="step-details">
+                                <p><strong>Co się dzieje teraz?</strong></p>
+                                <ul>
+                                    <li>System monitoruje zaplanowane spotkania</li>
+                                    <li>W odpowiednim czasie automatycznie otwiera Chrome</li>
+                                    <li>Loguje się do Teams i dołącza do spotkania</li>
+                                    <li>Wszystkie logi są zapisywane lokalnie</li>
+                                </ul>
+                                <div class="success-message">
+                                    <p><strong>Jeśli zobaczysz komunikat "Monitoring scheduled meetings..." - wszystko działa poprawnie!</strong></p>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="instruction-note">
-                            <h4><i class="fas fa-info-circle"></i> Ważne informacje:</h4>
-                            <ul>
-                                <li>Upewnij się, że masz zainstalowany Node.js i Chrome</li>
-                                <li>Automatyzacja działa tylko gdy komputer jest włączony</li>
-                                <li>System automatycznie wykrywa polską wersję Teams</li>
-                                <li>Możesz monitorować postęp w sekcji "Historia aktywności"</li>
-                            </ul>
+                        <div class="troubleshooting-section">
+                            <h4><i class="fas fa-question-circle"></i> Najczęstsze problemy</h4>
+                            <div class="faq-mini">
+                                <div class="faq-item-mini">
+                                    <strong>❌ "node nie jest rozpoznany"</strong>
+                                    <p>Node.js nie jest zainstalowany lub trzeba uruchomić nowy terminal</p>
+                                </div>
+                                <div class="faq-item-mini">
+                                    <strong>❌ "Cannot find module"</strong>
+                                    <p>Uruchom <code>npm install</code> w folderze meeting-joiner</p>
+                                </div>
+                                <div class="faq-item-mini">
+                                    <strong>❌ "Access denied"</strong>
+                                    <p>Uruchom terminal jako administrator (prawy klick → "Uruchom jako administrator")</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -399,10 +479,6 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="config.js"></script>
-    <script src="script.js"></script>
+    <script src="local-script.js"></script>
 </body>
 </html>
