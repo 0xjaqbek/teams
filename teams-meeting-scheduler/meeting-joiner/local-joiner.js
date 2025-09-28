@@ -152,6 +152,148 @@ class TranscriptionBuffer {
 let transcriptionBuffer = null;
 
 // Audio transcription function using Google Speech API
+// New function for Teams live captions transcription
+async function startTeamsLiveCaptions(page, meetingId, userDisplayName) {
+  try {
+    log('🎙️ Starting Teams live captions transcription...');
+
+    // Wait for meeting to be fully loaded
+    await page.waitForTimeout(3000);
+
+    // Enable live captions using Alt+Shift+C
+    log('📺 Enabling Teams live captions (Alt+Shift+C)...');
+    await page.keyboard.down('Alt');
+    await page.keyboard.down('Shift');
+    await page.keyboard.press('c');
+    await page.keyboard.up('Shift');
+    await page.keyboard.up('Alt');
+
+    // Wait for captions to initialize
+    await page.waitForTimeout(2000);
+    log('✅ Live captions keyboard shortcut executed');
+
+    // Look for live captions container
+    const captionsSelectors = [
+      '[data-tid="live-captions-container"]',
+      '[class*="live-captions"]',
+      '[class*="captions-container"]',
+      '[class*="transcript"]',
+      '.closed-captions',
+      '[aria-label*="captions"]',
+      '[aria-label*="transcript"]'
+    ];
+
+    let captionsContainer = null;
+    for (const selector of captionsSelectors) {
+      captionsContainer = await page.$(selector);
+      if (captionsContainer) {
+        log(`✅ Found captions container with selector: ${selector}`);
+        break;
+      }
+    }
+
+    if (!captionsContainer) {
+      log('⚠️  Live captions container not found immediately, will monitor for text changes');
+    }
+
+    // Initialize transcription buffer for database storage
+    transcriptionBuffer = new TranscriptionBuffer(meetingId, userDisplayName);
+
+    // Start monitoring for live caption text
+    log('🎯 Starting live captions monitoring...');
+    await monitorLiveCaptions(page, meetingId);
+
+  } catch (error) {
+    log(`❌ Error starting Teams live captions: ${error.message}`);
+  }
+}
+
+// Monitor live captions and save to database
+async function monitorLiveCaptions(page, meetingId) {
+  const captionHistory = new Set(); // Track seen captions to avoid duplicates
+  let lastCaptionText = '';
+
+  const monitorInterval = setInterval(async () => {
+    try {
+      // Look for any text that might be live captions
+      const captionTexts = await page.evaluate(() => {
+        const texts = [];
+
+        // Common selectors for Teams live captions
+        const selectors = [
+          '[data-tid*="caption"]',
+          '[class*="caption"]',
+          '[class*="transcript"]',
+          '[class*="live-caption"]',
+          '[aria-label*="caption"]',
+          '[role="log"]', // Teams often uses role="log" for live content
+          '.fui-Text', // Teams UI text elements
+        ];
+
+        selectors.forEach(selector => {
+          const elements = document.querySelectorAll(selector);
+          elements.forEach(el => {
+            const text = el.textContent?.trim();
+            if (text && text.length > 10 && text.includes(' ')) { // Likely to be speech
+              texts.push(text);
+            }
+          });
+        });
+
+        // Also check for any recently updated text elements
+        const allTextElements = document.querySelectorAll('*');
+        allTextElements.forEach(el => {
+          const text = el.textContent?.trim();
+          if (text && text.length > 15 && text.split(' ').length > 3) {
+            // Check if this looks like transcribed speech
+            if (text.match(/\b(um|uh|so|well|okay|alright|yeah|yes|no)\b/i) ||
+                text.match(/[.!?]$/) ||
+                text.toLowerCase().includes('speaking') ||
+                text.toLowerCase().includes('said')) {
+              texts.push(text);
+            }
+          }
+        });
+
+        return [...new Set(texts)]; // Remove duplicates
+      });
+
+      // Process new captions
+      for (const captionText of captionTexts) {
+        if (!captionHistory.has(captionText) && captionText !== lastCaptionText) {
+          captionHistory.add(captionText);
+          lastCaptionText = captionText;
+
+          // Log and store the caption
+          log(`📝 Caption: ${captionText}`);
+
+          // Store in transcription buffer for database
+          if (transcriptionBuffer) {
+            transcriptionBuffer.addTranscription(captionText, new Date().toISOString());
+          }
+
+          // Clean up old captions from memory (keep last 100)
+          if (captionHistory.size > 100) {
+            const oldCaptions = Array.from(captionHistory).slice(0, 50);
+            oldCaptions.forEach(old => captionHistory.delete(old));
+          }
+        }
+      }
+
+    } catch (error) {
+      // Continue monitoring even if there are errors
+    }
+  }, 2000); // Check every 2 seconds
+
+  // Clean up function
+  page.on('close', () => {
+    clearInterval(monitorInterval);
+    log('🛑 Live captions monitoring stopped - page closed');
+  });
+
+  log('✅ Live captions monitoring started (checking every 2 seconds)');
+}
+
 async function startTranscription(page, meetingId, userDisplayName) {
   try {
     log('🎙️ Starting transcription system...');
@@ -1114,9 +1256,9 @@ async function joinTeamsMeeting(meeting) {
       log(`🎉 Successfully joined meeting!`);
       await page.screenshot({ path: path.join(logsDir, `step7-meeting-joined.png`) });
 
-      // Start transcription system
-      log('🎙️ Starting transcription system...');
-      await startTranscription(page, meeting.id || 'demo', meeting.userDisplayName || 'User');
+      // Enable Teams live captions and start monitoring
+      log('🎙️ Starting Teams live captions transcription...');
+      await startTeamsLiveCaptions(page, meeting.id || 'demo', meeting.userDisplayName || 'User');
 
       // Keep the browser open - user will manually close
       log('✅ Meeting joined successfully! Browser will stay open until manually closed.');
