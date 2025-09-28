@@ -1,0 +1,43 @@
+# GitHub Pages Configuration for Teams Automation
+title: "Teams Meeting Automation"
+description: "Automatyzacja spotkań Microsoft Teams z obsługą polskiego interfejsu"
+url: "https://0xjaqbek.github.io"
+baseurl: "/teams"
+
+# Disable Jekyll plugins that might cause issues
+plugins: []
+
+# Include all files (don't ignore anything)
+include:
+  - "_*"
+  - ".nojekyll"
+
+# Exclude build files
+exclude:
+  - "README.md"
+  - "Gemfile"
+  - "Gemfile.lock"
+  - "node_modules"
+  - "vendor"
+
+# Markdown settings
+markdown: kramdown
+highlighter: rouge
+
+# Site settings
+lang: pl
+timezone: Europe/Warsaw
+
+# GitHub repository
+github:
+  repository_url: "https://github.com/0xjaqbek/teams"
+
+# SEO settings
+author: "Teams Automation"
+twitter:
+  card: summary_large_image
+
+social:
+  name: "Teams Automation"
+  links:
+    - "https://github.com/0xjaqbek/teams"
