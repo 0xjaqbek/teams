@@ -956,12 +956,15 @@ async function joinTeamsMeeting(meeting) {
     // Look for join meeting button
     log('Looking for join meeting buttons...');
     const joinButtons = [
+      'button[data-tid="channel-ongoing-meeting-banner-join-button"]', // Teams channel meeting banner join button
       'button[data-tid="prejoin-join-button"]',
+      'button[aria-label*="Join meeting in progress"]', // New Teams join button
       'button[aria-label*="Join now"]',
       'button[title*="Join now"]',
       'button[title*="Join"]',
       'button:contains("Dołącz teraz")', // Polish "Join now"
       'button:contains("Join now")', // English "Join now"
+      'button:contains("Join")', // Simple "Join" text
       '.join-btn',
       '[data-tid="toggle-mute"]' // Sometimes this appears when already in meeting
     ];
