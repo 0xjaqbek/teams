@@ -613,7 +613,191 @@ window.addEventListener('resize', () => {
     }
 });
 
+// ===========================
+// VERSION SELECTION MODAL
+// ===========================
+
+// Check for saved version preference
+let selectedVersion = localStorage.getItem('selectedVersion');
+
+// Show modal on first visit or if no version is saved
+document.addEventListener('DOMContentLoaded', () => {
+    if (!selectedVersion) {
+        setTimeout(() => {
+            showVersionModal();
+        }, 1500); // Show after welcome animation
+    } else {
+        applyVersionPreference(selectedVersion);
+    }
+});
+
+function showVersionModal() {
+    const modal = document.getElementById('versionModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function hideVersionModal() {
+    const modal = document.getElementById('versionModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function selectVersion(version) {
+    selectedVersion = version;
+    localStorage.setItem('selectedVersion', version);
+
+    // Apply version preference
+    applyVersionPreference(version);
+
+    // Hide modal
+    hideVersionModal();
+
+    // Show confirmation
+    const versionName = version === 'local' ? 'Local' : 'Firebase';
+    showNotification(`✅ ${versionName} version selected! Instructions updated below.`, 'success');
+
+    // Add version toggle button
+    addVersionToggleButton();
+}
+
+function applyVersionPreference(version) {
+    // Add version class to body
+    document.body.className = document.body.className.replace(/version-\w+/g, '');
+    document.body.classList.add(`version-${version}`);
+
+    // Update installation instructions based on version
+    updateInstallationInstructions(version);
+
+    // Add version toggle button
+    addVersionToggleButton();
+}
+
+function addVersionToggleButton() {
+    // Remove existing button if any
+    const existingBtn = document.querySelector('.version-toggle-button');
+    if (existingBtn) {
+        existingBtn.remove();
+    }
+
+    // Create new toggle button
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'version-toggle-button';
+    toggleBtn.innerHTML = `<i class="fas fa-code-branch"></i> Switch Version`;
+    toggleBtn.onclick = showVersionModal;
+
+    document.body.appendChild(toggleBtn);
+}
+
+function updateInstallationInstructions(version) {
+    // Update requirements section
+    const requirementsSection = document.querySelector('#installation');
+    if (requirementsSection) {
+        const firebaseRequirement = requirementsSection.querySelector('.content-firebase');
+        const localNote = requirementsSection.querySelector('.content-local');
+
+        if (version === 'local') {
+            if (firebaseRequirement) firebaseRequirement.style.display = 'none';
+            if (localNote) localNote.style.display = 'block';
+        } else {
+            if (firebaseRequirement) firebaseRequirement.style.display = 'block';
+            if (localNote) localNote.style.display = 'none';
+        }
+    }
+
+    // Update terminal demo
+    updateTerminalDemo(version);
+
+    // Update download links
+    updateDownloadLinks(version);
+}
+
+function updateTerminalDemo(version) {
+    const terminalDemo = document.querySelector('.terminal-demo');
+    if (terminalDemo && version === 'local') {
+        terminalDemo.innerHTML = `
+            <div class="terminal-line">
+                <span class="prompt">teams-automation$</span>
+                <span class="command">node local-joiner.js dashboard</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output success">🌐 Dashboard server started at http://localhost:3000</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output info">💾 Using local storage backend</span>
+            </div>
+            <div class="terminal-line">
+                <span class="output success">✅ Ready to schedule meetings!</span>
+            </div>
+        `;
+    }
+}
+
+function updateDownloadLinks(version) {
+    const downloadSection = document.querySelector('#download');
+
+    // Remove existing version notes
+    const existingNotes = downloadSection?.querySelectorAll('.version-note');
+    existingNotes?.forEach(note => note.remove());
+
+    if (downloadSection && version === 'local') {
+        // Add special note for local version
+        const localNote = document.createElement('div');
+        localNote.className = 'version-note local-version-note';
+        localNote.style.cssText = `
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        `;
+        localNote.innerHTML = `
+            <h3><i class="fas fa-star"></i> Local Version Selected</h3>
+            <p>You're using the simplified local version! No Firebase setup required.</p>
+            <p><strong>Quick Start:</strong> Download → Install Node.js → Run <code>node local-joiner.js dashboard</code></p>
+            <div style="margin-top: 15px;">
+                <a href="https://github.com/0xjaqbek/teams/archive/refs/heads/optional-firebase-local-storage.zip"
+                   style="background: rgba(255,255,255,0.2); color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
+                    <i class="fas fa-download"></i> Download Local Version ZIP
+                </a>
+            </div>
+        `;
+        downloadSection.insertBefore(localNote, downloadSection.firstChild);
+    } else if (downloadSection && version === 'firebase') {
+        // Add special note for Firebase version
+        const firebaseNote = document.createElement('div');
+        firebaseNote.className = 'version-note firebase-version-note';
+        firebaseNote.style.cssText = `
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        `;
+        firebaseNote.innerHTML = `
+            <h3><i class="fas fa-cloud"></i> Firebase Version Selected</h3>
+            <p>You're using the full-featured Firebase version with cloud capabilities.</p>
+            <p><strong>Setup Required:</strong> Download → Install Node.js → Configure Firebase → Deploy</p>
+            <div style="margin-top: 15px;">
+                <a href="https://github.com/0xjaqbek/teams/archive/refs/heads/main.zip"
+                   style="background: rgba(255,255,255,0.2); color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
+                    <i class="fas fa-download"></i> Download Firebase Version ZIP
+                </a>
+            </div>
+        `;
+        downloadSection.insertBefore(firebaseNote, downloadSection.firstChild);
+    }
+}
+
 // Export functions for global access
 window.copyToClipboard = copyToClipboard;
 window.scrollToTop = scrollToTop;
 window.showNotification = showNotification;
+window.selectVersion = selectVersion;
+window.showVersionModal = showVersionModal;

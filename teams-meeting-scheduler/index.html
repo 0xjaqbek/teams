@@ -12,6 +12,65 @@
     <meta name="author" content="Teams Automation">
 </head>
 <body>
+    <!-- Version Selection Modal -->
+    <div id="versionModal" class="version-modal">
+        <div class="version-modal-content">
+            <div class="version-modal-header">
+                <h2><i class="fas fa-code-branch"></i> Choose Your Version</h2>
+                <p>Select the version that best fits your needs</p>
+            </div>
+            <div class="version-options">
+                <div class="version-card" data-version="local">
+                    <div class="version-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3>Local Version</h3>
+                    <p class="version-subtitle">Simple & Easy Setup</p>
+                    <ul class="version-features">
+                        <li><i class="fas fa-check"></i> No Firebase setup required</li>
+                        <li><i class="fas fa-check"></i> All data stored locally</li>
+                        <li><i class="fas fa-check"></i> Works offline</li>
+                        <li><i class="fas fa-check"></i> 5-minute setup</li>
+                    </ul>
+                    <button class="version-btn version-btn-primary" onclick="selectVersion('local')">
+                        Choose Local Version
+                    </button>
+                    <div style="margin-top: 10px;">
+                        <a href="https://github.com/0xjaqbek/teams/tree/optional-firebase-local-storage" target="_blank" style="color: #059669; text-decoration: none; font-size: 0.9rem;">
+                            <i class="fab fa-github"></i> View Local Version Branch
+                        </a>
+                    </div>
+                    <div class="version-badge">Recommended</div>
+                </div>
+
+                <div class="version-card" data-version="firebase">
+                    <div class="version-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h3>Firebase Version</h3>
+                    <p class="version-subtitle">Cloud-powered Features</p>
+                    <ul class="version-features">
+                        <li><i class="fas fa-check"></i> Cloud data synchronization</li>
+                        <li><i class="fas fa-check"></i> Multi-device access</li>
+                        <li><i class="fas fa-check"></i> Team collaboration</li>
+                        <li><i class="fas fa-exclamation-triangle"></i> Requires Firebase setup</li>
+                    </ul>
+                    <button class="version-btn version-btn-secondary" onclick="selectVersion('firebase')">
+                        Choose Firebase Version
+                    </button>
+                    <div style="margin-top: 10px;">
+                        <a href="https://github.com/0xjaqbek/teams/tree/main" target="_blank" style="color: #3b82f6; text-decoration: none; font-size: 0.9rem;">
+                            <i class="fab fa-github"></i> View Firebase Version Branch
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="version-modal-footer">
+                <p><small>You can always switch versions later. This choice will customize the instructions below.</small></p>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="header">
         <div class="container">
@@ -336,13 +395,21 @@
                                         </div>
                                     </div>
 
-                                    <div class="code-step">
+                                    <div class="code-step content-firebase">
                                         <span class="step-desc">3. Zainstaluj zależności Firebase:</span>
                                         <div class="code-block">
                                             <code>cd ../functions && npm install</code>
                                             <button class="copy-btn" onclick="copyToClipboard('cd ../functions && npm install')">
                                                 <i class="fas fa-copy"></i>
                                             </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-step content-local">
+                                        <span class="step-desc">3. Gotowe! (Wersja lokalna nie wymaga dodatkowych zależności)</span>
+                                        <div class="note">
+                                            <i class="fas fa-check-circle"></i>
+                                            <p>Wersja lokalna jest gotowa do użycia!</p>
                                         </div>
                                     </div>
                                 </div>
@@ -358,13 +425,160 @@
     <!-- Setup Section -->
     <section id="setup" class="setup">
         <div class="container">
-            <h2>⚙️ Konfiguracja Firebase i Google Cloud</h2>
+            <!-- Firebase Version Setup -->
+            <div class="content-firebase">
+                <h2>⚙️ Konfiguracja Firebase i Google Cloud</h2>
 
-            <div class="setup-warning">
-                <i class="fas fa-exclamation-triangle"></i>
-                <div>
-                    <h3>Ważne!</h3>
-                    <p>Ta sekcja wymaga utworzenia darmowych kont Firebase i Google Cloud. Nie martw się - wszystko jest bezpłatne w ramach limitów, które wystarczą na normalne użytkowanie.</p>
+                <div class="setup-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <h3>Ważne!</h3>
+                        <p>Ta sekcja wymaga utworzenia darmowych kont Firebase i Google Cloud. Nie martw się - wszystko jest bezpłatne w ramach limitów, które wystarczą na normalne użytkowanie.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Local Version Setup -->
+            <div class="content-local">
+                <h2>🚀 Uruchomienie - Wersja Lokalna</h2>
+
+                <div class="setup-success">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <h3>Gratulacje!</h3>
+                        <p>Wersja lokalna nie wymaga żadnej dodatkowej konfiguracji. Wszystko działa od razu po instalacji!</p>
+                    </div>
+                </div>
+
+                <div class="local-quick-start">
+                    <h3><i class="fas fa-play-circle"></i> Szybki start - 4 proste kroki</h3>
+                    <div class="quick-start-steps">
+                        <div class="quick-step">
+                            <div class="step-icon">1</div>
+                            <div class="step-info">
+                                <h4>Uruchom serwer lokalny</h4>
+                                <div class="code-block">
+                                    <code>node local-joiner.js dashboard</code>
+                                    <button class="copy-btn" onclick="copyToClipboard('node local-joiner.js dashboard')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                <p>Otwórz terminal w folderze <code>meeting-joiner</code> i uruchom powyższą komendę</p>
+                            </div>
+                        </div>
+
+                        <div class="quick-step">
+                            <div class="step-icon">2</div>
+                            <div class="step-info">
+                                <h4>Otwórz dashboard w przeglądarce</h4>
+                                <div class="url-link">
+                                    <a href="http://localhost:3000" target="_blank">
+                                        <i class="fas fa-external-link-alt"></i>
+                                        http://localhost:3000
+                                    </a>
+                                </div>
+                                <p>Serwer automatycznie utworzy lokalny dashboard pod powyższym adresem</p>
+                            </div>
+                        </div>
+
+                        <div class="quick-step">
+                            <div class="step-icon">3</div>
+                            <div class="step-info">
+                                <h4>Wprowadź swoje dane Teams</h4>
+                                <p>W dashboard przejdź do zakładki <strong>"Settings"</strong> i wprowadź:</p>
+                                <ul>
+                                    <li>Swoje imię i email</li>
+                                    <li>Email do konta Microsoft Teams</li>
+                                    <li>Hasło do konta Teams</li>
+                                </ul>
+                                <div class="note">
+                                    <i class="fas fa-lock"></i>
+                                    <p>Wszystkie dane są szyfrowane i przechowywane tylko lokalnie na Twoim komputerze</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quick-step">
+                            <div class="step-icon">4</div>
+                            <div class="step-info">
+                                <h4>Zaplanuj pierwsze spotkanie</h4>
+                                <p>W zakładce <strong>"Dashboard"</strong>:</p>
+                                <ul>
+                                    <li>Wklej link do spotkania Teams</li>
+                                    <li>Ustaw datę i godzinę</li>
+                                    <li>Kliknij "Schedule Meeting"</li>
+                                </ul>
+                                <p>System automatycznie dołączy do spotkania w wyznaczonym czasie!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="local-advantages">
+                    <h3><i class="fas fa-star"></i> Zalety wersji lokalnej</h3>
+                    <div class="advantages-grid">
+                        <div class="advantage-item">
+                            <i class="fas fa-bolt"></i>
+                            <div>
+                                <h4>Błyskawiczna instalacja</h4>
+                                <p>Gotowa do użycia w zaledwie 5 minut</p>
+                            </div>
+                        </div>
+                        <div class="advantage-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <h4>Maksymalna prywatność</h4>
+                                <p>Wszystkie dane tylko na Twoim komputerze</p>
+                            </div>
+                        </div>
+                        <div class="advantage-item">
+                            <i class="fas fa-wifi-slash"></i>
+                            <div>
+                                <h4>Działa offline</h4>
+                                <p>Zarządzanie spotkaniami bez internetu</p>
+                            </div>
+                        </div>
+                        <div class="advantage-item">
+                            <i class="fas fa-money-bill-slash"></i>
+                            <div>
+                                <h4>Całkowicie darmowa</h4>
+                                <p>Zero kosztów zewnętrznych usług</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="local-tips">
+                    <h3><i class="fas fa-lightbulb"></i> Przydatne wskazówki</h3>
+                    <div class="tips-list">
+                        <div class="tip-item">
+                            <i class="fas fa-play"></i>
+                            <div>
+                                <h4>Automatyczne uruchamianie</h4>
+                                <p>Aby system automatycznie monitorował spotkania, użyj:</p>
+                                <div class="code-block">
+                                    <code>node local-joiner.js schedule</code>
+                                    <button class="copy-btn" onclick="copyToClipboard('node local-joiner.js schedule')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <i class="fas fa-download"></i>
+                            <div>
+                                <h4>Kopia zapasowa danych</h4>
+                                <p>W dashboard możesz wyeksportować wszystkie swoje dane do pliku JSON</p>
+                            </div>
+                        </div>
+                        <div class="tip-item">
+                            <i class="fas fa-desktop"></i>
+                            <div>
+                                <h4>Uruchomienie przy starcie systemu</h4>
+                                <p>Dodaj skrypt do autostartu Windows, aby automatycznie uruchamiał się z systemem</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
