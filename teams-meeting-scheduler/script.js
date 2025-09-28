@@ -658,8 +658,8 @@ function selectVersion(version) {
     hideVersionModal();
 
     // Show confirmation
-    const versionName = version === 'local' ? 'Local' : 'Firebase';
-    showNotification(`✅ ${versionName} version selected! Instructions updated below.`, 'success');
+    const versionName = version === 'local' ? 'Lokalna' : 'Firebase';
+    showNotification(`✅ Wybrano wersję ${versionName}! Instrukcje zostały zaktualizowane poniżej.`, 'success');
 
     // Add version toggle button
     addVersionToggleButton();
@@ -687,7 +687,7 @@ function addVersionToggleButton() {
     // Create new toggle button
     const toggleBtn = document.createElement('button');
     toggleBtn.className = 'version-toggle-button';
-    toggleBtn.innerHTML = `<i class="fas fa-code-branch"></i> Switch Version`;
+    toggleBtn.innerHTML = `<i class="fas fa-code-branch"></i> Zmień Wersję`;
     toggleBtn.onclick = showVersionModal;
 
     document.body.appendChild(toggleBtn);
@@ -757,13 +757,13 @@ function updateDownloadLinks(version) {
             text-align: center;
         `;
         localNote.innerHTML = `
-            <h3><i class="fas fa-star"></i> Local Version Selected</h3>
-            <p>You're using the simplified local version! No Firebase setup required.</p>
-            <p><strong>Quick Start:</strong> Download → Install Node.js → Run <code>node local-joiner.js dashboard</code></p>
+            <h3><i class="fas fa-star"></i> Wybrano Wersję Lokalną</h3>
+            <p>Używasz uproszczonej wersji lokalnej! Bez konfiguracji Firebase.</p>
+            <p><strong>Szybki Start:</strong> Pobierz → Zainstaluj Node.js → Uruchom <code>node local-joiner.js dashboard</code></p>
             <div style="margin-top: 15px;">
                 <a href="https://github.com/0xjaqbek/teams/archive/refs/heads/optional-firebase-local-storage.zip"
                    style="background: rgba(255,255,255,0.2); color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
-                    <i class="fas fa-download"></i> Download Local Version ZIP
+                    <i class="fas fa-download"></i> Pobierz Wersję Lokalną ZIP
                 </a>
             </div>
         `;
@@ -781,13 +781,13 @@ function updateDownloadLinks(version) {
             text-align: center;
         `;
         firebaseNote.innerHTML = `
-            <h3><i class="fas fa-cloud"></i> Firebase Version Selected</h3>
-            <p>You're using the full-featured Firebase version with cloud capabilities.</p>
-            <p><strong>Setup Required:</strong> Download → Install Node.js → Configure Firebase → Deploy</p>
+            <h3><i class="fas fa-cloud"></i> Wybrano Wersję Firebase</h3>
+            <p>Używasz pełnej wersji Firebase z możliwościami chmurowymi.</p>
+            <p><strong>Wymagana Konfiguracja:</strong> Pobierz → Zainstaluj Node.js → Skonfiguruj Firebase → Wdróż</p>
             <div style="margin-top: 15px;">
                 <a href="https://github.com/0xjaqbek/teams/archive/refs/heads/main.zip"
                    style="background: rgba(255,255,255,0.2); color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
-                    <i class="fas fa-download"></i> Download Firebase Version ZIP
+                    <i class="fas fa-download"></i> Pobierz Wersję Firebase ZIP
                 </a>
             </div>
         `;
