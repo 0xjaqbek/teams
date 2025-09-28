@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams Meeting Automation - Automatyzacja Spotkań Teams</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Automatyzacja spotkań Microsoft Teams - przewodnik instalacji i konfiguracji dla użytkowników">
+    <meta name="keywords" content="Teams, automation, automatyzacja, spotkania, Microsoft Teams">
+    <meta name="author" content="Teams Automation">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <h1>Teams Meeting Automation</h1>
+                    <span class="subtitle">Automatyzacja Spotkań Microsoft Teams</span>
+                </div>
+                <nav class="nav">
+                    <a href="#features">Funkcje</a>
+                    <a href="#installation">Instalacja</a>
+                    <a href="#setup">Konfiguracja</a>
+                    <a href="#download">Pobierz</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>🤖 Automatyzacja Spotkań Teams</h2>
+                <p class="hero-description">
+                    Nigdy więcej nie spóźnij się na spotkanie! Automatycznie dołączaj do spotkań Microsoft Teams
+                    z obsługą polskiego interfejsu i transkrypcją w czasie rzeczywistym.
+                </p>
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Automatyczne dołączanie</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-globe"></i>
+                        <span>Polski interfejs Teams</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-microphone"></i>
+                        <span>Transkrypcja na żywo</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Bezpieczne przechowywanie</span>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <a href="#installation" class="btn btn-primary">
+                        <i class="fas fa-download"></i>
+                        Rozpocznij instalację
+                    </a>
+                    <a href="https://github.com/0xjaqbek/teams" class="btn btn-secondary" target="_blank">
+                        <i class="fab fa-github"></i>
+                        Zobacz kod źródłowy
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="demo-window">
+                    <div class="window-header">
+                        <div class="window-controls">
+                            <span class="control red"></span>
+                            <span class="control yellow"></span>
+                            <span class="control green"></span>
+                        </div>
+                        <span class="window-title">Teams Automation</span>
+                    </div>
+                    <div class="window-content">
+                        <div class="terminal-demo">
+                            <div class="terminal-line">
+                                <span class="prompt">teams-automation$</span>
+                                <span class="command">node local-joiner.js schedule</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="output success">✅ Monitoring scheduled meetings...</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="output info">🎯 Found meeting at 14:00 - joining now</span>
+                            </div>
+                            <div class="terminal-line">
+                                <span class="output success">🎉 Successfully joined Teams meeting!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>🌟 Kluczowe funkcje</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3>Automatyczne planowanie</h3>
+                    <p>Zaplanuj spotkania przez przyjazny interfejs webowy. System automatycznie dołączy do spotkań o wyznaczonej porze.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3>Obsługa polskiego Teams</h3>
+                    <p>Pełna kompatybilność z polską wersją Microsoft Teams. Automatyczne rozpoznawanie przycisków i interfejsu.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-microphone-alt"></i>
+                    </div>
+                    <h3>Transkrypcja w czasie rzeczywistym</h3>
+                    <p>Automatyczna transkrypcja polskich rozmów używając Google Speech API. Bez zapisywania audio - tylko tekst.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Bezpieczne dane</h3>
+                    <p>Wszystkie dane logowania są szyfrowane i przechowywane bezpiecznie. Pełna kontrola nad własnymi danymi.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3>Lokalnie na Twoim komputerze</h3>
+                    <p>Uruchamia się bezpośrednio na Twoim komputerze. Nie wysyłamy danych na zewnętrzne serwery.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Łatwa konfiguracja</h3>
+                    <p>Prosty przewodnik instalacji krok po kroku. Gotowe skrypty do uruchomienia jednym kliknięciem.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Requirements Section -->
+    <section class="requirements">
+        <div class="container">
+            <h2>📋 Wymagania systemowe</h2>
+            <div class="requirements-grid">
+                <div class="requirement-item">
+                    <i class="fab fa-windows"></i>
+                    <h3>System operacyjny</h3>
+                    <p>Windows 10/11, macOS, Linux</p>
+                </div>
+                <div class="requirement-item">
+                    <i class="fab fa-node-js"></i>
+                    <h3>Node.js</h3>
+                    <p>Wersja 18 lub nowsza (LTS zalecana)</p>
+                </div>
+                <div class="requirement-item">
+                    <i class="fab fa-chrome"></i>
+                    <h3>Google Chrome</h3>
+                    <p>Najnowsza wersja z kontem Teams</p>
+                </div>
+                <div class="requirement-item">
+                    <i class="fas fa-wifi"></i>
+                    <h3>Połączenie internetowe</h3>
+                    <p>Stabilne połączenie do Teams i Firebase</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation" class="installation">
+        <div class="container">
+            <h2>🚀 Instalacja krok po kroku</h2>
+            <div class="installation-steps">
+
+                <!-- Step 1: Software Installation -->
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3><i class="fas fa-download"></i> Zainstaluj wymagane oprogramowanie</h3>
+
+                        <div class="substep">
+                            <h4>A) Node.js</h4>
+                            <div class="download-box">
+                                <div class="download-info">
+                                    <i class="fab fa-node-js"></i>
+                                    <div>
+                                        <strong>Node.js LTS</strong>
+                                        <p>Runtime JavaScript dla automatyzacji</p>
+                                    </div>
+                                </div>
+                                <a href="https://nodejs.org" target="_blank" class="btn btn-primary">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Pobierz Node.js
+                                </a>
+                            </div>
+                            <div class="instructions">
+                                <ol>
+                                    <li>Kliknij przycisk "Pobierz Node.js" powyżej</li>
+                                    <li>Pobierz wersję LTS (Long Term Support)</li>
+                                    <li>Uruchom pobrany plik i postępuj zgodnie z instrukcjami</li>
+                                    <li>Po instalacji otwórz Command Prompt i wpisz: <code>node --version</code></li>
+                                    <li>Powinieneś zobaczyć numer wersji (np. v18.17.0)</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="substep">
+                            <h4>B) Google Chrome</h4>
+                            <div class="download-box">
+                                <div class="download-info">
+                                    <i class="fab fa-chrome"></i>
+                                    <div>
+                                        <strong>Google Chrome</strong>
+                                        <p>Przeglądarka do automatyzacji Teams</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/chrome" target="_blank" class="btn btn-primary">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Pobierz Chrome
+                                </a>
+                            </div>
+                            <div class="instructions">
+                                <ol>
+                                    <li>Pobierz i zainstaluj najnowszą wersję Chrome</li>
+                                    <li><strong>Ważne:</strong> Zaloguj się do swojego konta Microsoft Teams w Chrome</li>
+                                    <li>Sprawdź czy możesz otworzyć Teams w przeglądarce</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Download Project -->
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3><i class="fab fa-github"></i> Pobierz projekt z GitHub</h3>
+
+                        <div class="download-options">
+                            <div class="option">
+                                <h4>Opcja A: Pobierz ZIP (zalecana dla początkujących)</h4>
+                                <div class="download-box">
+                                    <div class="download-info">
+                                        <i class="fas fa-file-archive"></i>
+                                        <div>
+                                            <strong>Teams Automation ZIP</strong>
+                                            <p>Gotowy do użycia pakiet</p>
+                                        </div>
+                                    </div>
+                                    <a href="https://github.com/0xjaqbek/teams/archive/refs/heads/main.zip" class="btn btn-success">
+                                        <i class="fas fa-download"></i>
+                                        Pobierz ZIP
+                                    </a>
+                                </div>
+                                <div class="instructions">
+                                    <ol>
+                                        <li>Kliknij przycisk "Pobierz ZIP" powyżej</li>
+                                        <li>Zapisz plik na pulpicie lub w folderze Dokumenty</li>
+                                        <li>Kliknij prawym przyciskiem na plik ZIP i wybierz "Wyodrębnij wszystko"</li>
+                                        <li>Wybierz lokalizację (np. <code>C:\teams-automation\</code>)</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <div class="option">
+                                <h4>Opcja B: Git Clone (dla doświadczonych)</h4>
+                                <div class="code-block">
+                                    <code>git clone https://github.com/0xjaqbek/teams.git</code>
+                                    <button class="copy-btn" onclick="copyToClipboard('git clone https://github.com/0xjaqbek/teams.git')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Quick Setup -->
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3><i class="fas fa-magic"></i> Szybka instalacja zależności</h3>
+
+                        <div class="setup-options">
+                            <div class="option">
+                                <h4>Windows - Automatyczna instalacja</h4>
+                                <div class="instructions">
+                                    <ol>
+                                        <li>Otwórz folder z projektem</li>
+                                        <li>Znajdź plik <code>setup.bat</code></li>
+                                        <li>Kliknij dwukrotnie na <code>setup.bat</code></li>
+                                        <li>Poczekaj aż instalacja się zakończy</li>
+                                    </ol>
+                                </div>
+                                <div class="note">
+                                    <i class="fas fa-info-circle"></i>
+                                    <p>Skrypt automatycznie zainstaluje wszystkie wymagane zależności</p>
+                                </div>
+                            </div>
+
+                            <div class="option">
+                                <h4>Ręczna instalacja (wszystkie systemy)</h4>
+                                <div class="code-steps">
+                                    <div class="code-step">
+                                        <span class="step-desc">1. Przejdź do folderu projektu:</span>
+                                        <div class="code-block">
+                                            <code>cd teams-meeting-scheduler</code>
+                                            <button class="copy-btn" onclick="copyToClipboard('cd teams-meeting-scheduler')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-step">
+                                        <span class="step-desc">2. Zainstaluj zależności meeting-joiner:</span>
+                                        <div class="code-block">
+                                            <code>cd meeting-joiner && npm install</code>
+                                            <button class="copy-btn" onclick="copyToClipboard('cd meeting-joiner && npm install')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-step">
+                                        <span class="step-desc">3. Zainstaluj zależności Firebase:</span>
+                                        <div class="code-block">
+                                            <code>cd ../functions && npm install</code>
+                                            <button class="copy-btn" onclick="copyToClipboard('cd ../functions && npm install')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Setup Section -->
+    <section id="setup" class="setup">
+        <div class="container">
+            <h2>⚙️ Konfiguracja Firebase i Google Cloud</h2>
+
+            <div class="setup-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <h3>Ważne!</h3>
+                    <p>Ta sekcja wymaga utworzenia darmowych kont Firebase i Google Cloud. Nie martw się - wszystko jest bezpłatne w ramach limitów, które wystarczą na normalne użytkowanie.</p>
+                </div>
+            </div>
+
+            <div class="setup-steps">
+
+                <!-- Firebase Setup -->
+                <div class="setup-card">
+                    <div class="setup-header">
+                        <i class="fas fa-database"></i>
+                        <h3>1. Firebase - Baza danych i uwierzytelnianie</h3>
+                    </div>
+                    <div class="setup-content">
+                        <h4>A) Utwórz projekt Firebase</h4>
+                        <ol>
+                            <li>
+                                Przejdź do <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a>
+                                <a href="https://console.firebase.google.com" target="_blank" class="external-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </li>
+                            <li>Kliknij "Utwórz projekt" lub "Create a project"</li>
+                            <li>Podaj nazwę projektu (np. "teams-automation-twoje-imie")</li>
+                            <li>Wyłącz Google Analytics (nie jest potrzebny)</li>
+                            <li>Kliknij "Utwórz projekt"</li>
+                        </ol>
+
+                        <h4>B) Skonfiguruj Firestore Database</h4>
+                        <ol>
+                            <li>W konsoli Firebase kliknij "Firestore Database"</li>
+                            <li>Kliknij "Utwórz bazę danych"</li>
+                            <li>Wybierz "Rozpocznij w trybie testowym"</li>
+                            <li>Wybierz lokalizację (np. europe-west)</li>
+                        </ol>
+
+                        <h4>C) Włącz uwierzytelnianie</h4>
+                        <ol>
+                            <li>Kliknij "Authentication" w menu</li>
+                            <li>Wybierz kartę "Sign-in method"</li>
+                            <li>Włącz "Email/Password"</li>
+                            <li>Włącz "Google" (opcjonalne)</li>
+                        </ol>
+
+                        <h4>D) Uzyskaj klucze konfiguracyjne</h4>
+                        <ol>
+                            <li>Kliknij ikona koła zębatego → "Project settings"</li>
+                            <li>Przewiń w dół do sekcji "Your apps"</li>
+                            <li>Kliknij ikonę web (</>) aby dodać aplikację web</li>
+                            <li>Podaj nazwę aplikacji i kliknij "Register app"</li>
+                            <li>Skopiuj konfigurację Firebase (będzie potrzebna później)</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Google Cloud Setup -->
+                <div class="setup-card">
+                    <div class="setup-header">
+                        <i class="fas fa-microphone"></i>
+                        <h3>2. Google Cloud - Speech-to-Text API (opcjonalne)</h3>
+                    </div>
+                    <div class="setup-content">
+                        <div class="note">
+                            <i class="fas fa-info-circle"></i>
+                            <p><strong>To jest opcjonalne!</strong> Potrzebne tylko jeśli chcesz transkrypcję na żywo.</p>
+                        </div>
+
+                        <h4>A) Utwórz projekt Google Cloud</h4>
+                        <ol>
+                            <li>
+                                Przejdź do <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a>
+                                <a href="https://console.cloud.google.com" target="_blank" class="external-link">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </li>
+                            <li>Kliknij "Wybierz projekt" → "Nowy projekt"</li>
+                            <li>Podaj nazwę projektu</li>
+                            <li>Kliknij "Utwórz"</li>
+                        </ol>
+
+                        <h4>B) Włącz Speech-to-Text API</h4>
+                        <ol>
+                            <li>W Google Cloud Console przejdź do "APIs & Services" → "Library"</li>
+                            <li>Wyszukaj "Speech-to-Text API"</li>
+                            <li>Kliknij na API i wybierz "Enable"</li>
+                        </ol>
+
+                        <h4>C) Utwórz klucz API</h4>
+                        <ol>
+                            <li>Przejdź do "APIs & Services" → "Credentials"</li>
+                            <li>Kliknij "Create Credentials" → "API Key"</li>
+                            <li>Skopiuj wygenerowany klucz API</li>
+                            <li>Opcjonalnie: Kliknij "Restrict Key" i ogranicz do Speech-to-Text API</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Configuration Files -->
+                <div class="setup-card">
+                    <div class="setup-header">
+                        <i class="fas fa-file-code"></i>
+                        <h3>3. Konfiguracja plików</h3>
+                    </div>
+                    <div class="setup-content">
+                        <h4>A) Skonfiguruj web dashboard</h4>
+                        <ol>
+                            <li>Otwórz plik <code>web-dashboard/script.js</code></li>
+                            <li>Znajdź sekcję z <code>firebaseConfig</code></li>
+                            <li>Zastąp przykładowymi danymi swoją konfigurację Firebase</li>
+                        </ol>
+
+                        <div class="code-block">
+<code>const firebaseConfig = {
+  apiKey: "twój-api-key",
+  authDomain: "twój-projekt.firebaseapp.com",
+  projectId: "twój-projekt-id",
+  // ... reszta konfiguracji
+};</code>
+                        </div>
+
+                        <h4>B) Skonfiguruj local-joiner</h4>
+                        <ol>
+                            <li>Otwórz plik <code>meeting-joiner/local-joiner.js</code></li>
+                            <li>Znajdź sekcję CONFIG na górze pliku</li>
+                            <li>Uzupełnij swoimi danymi:</li>
+                        </ol>
+
+                        <div class="code-block">
+<code>const CONFIG = {
+  FIREBASE_PROJECT_ID: 'twój-projekt-id',
+  FIREBASE_PRIVATE_KEY: 'twój-private-key',
+  FIREBASE_CLIENT_EMAIL: 'twój-client-email',
+  ENCRYPTION_KEY: 'twój-bezpieczny-klucz',
+  GOOGLE_API_KEY: 'twój-google-api-key' // opcjonalne
+};</code>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Usage Section -->
+    <section class="usage">
+        <div class="container">
+            <h2>🎯 Jak używać automatyzacji</h2>
+
+            <div class="usage-flow">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-content">
+                        <h3>Otwórz dashboard</h3>
+                        <p>Uruchom plik <code>web-dashboard/index.html</code> w przeglądarce</p>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">→</div>
+
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-content">
+                        <h3>Zaloguj się</h3>
+                        <p>Utwórz konto lub zaloguj się emailem/Google</p>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">→</div>
+
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-content">
+                        <h3>Skonfiguruj Teams</h3>
+                        <p>Dodaj email i hasło Teams w ustawieniach profilu</p>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">→</div>
+
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-content">
+                        <h3>Zaplanuj spotkanie</h3>
+                        <p>Dodaj link Teams i czas spotkania</p>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">→</div>
+
+                <div class="flow-step">
+                    <div class="flow-number">5</div>
+                    <div class="flow-content">
+                        <h3>Pobierz konfigurację</h3>
+                        <p>Użyj przycisku "Pobierz plik konfiguracyjny"</p>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">→</div>
+
+                <div class="flow-step">
+                    <div class="flow-number">6</div>
+                    <div class="flow-content">
+                        <h3>Uruchom automatyzację</h3>
+                        <p>Wykonaj pobrany skrypt lub uruchom ręcznie</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="usage-commands">
+                <h3>🖥️ Komendy do uruchomienia</h3>
+
+                <div class="command-option">
+                    <h4>Automatyczny harmonogram (zalecane)</h4>
+                    <div class="code-block">
+                        <code>cd meeting-joiner<br>node local-joiner.js schedule</code>
+                        <button class="copy-btn" onclick="copyToClipboard('cd meeting-joiner\nnode local-joiner.js schedule')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <p>Monitoruje zaplanowane spotkania i automatycznie dołącza o odpowiednim czasie</p>
+                </div>
+
+                <div class="command-option">
+                    <h4>Jednorazowe dołączenie</h4>
+                    <div class="code-block">
+                        <code>cd meeting-joiner<br>node local-joiner.js</code>
+                        <button class="copy-btn" onclick="copyToClipboard('cd meeting-joiner\nnode local-joiner.js')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <p>Dołącza do pierwszego dostępnego spotkania na liście</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Troubleshooting Section -->
+    <section class="troubleshooting">
+        <div class="container">
+            <h2>🔧 Rozwiązywanie problemów</h2>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> Chrome nie otwiera się z moim kontem</h3>
+                    <div class="faq-answer">
+                        <p><strong>Rozwiązanie:</strong></p>
+                        <ol>
+                            <li>Zamknij wszystkie okna Chrome</li>
+                            <li>W pliku <code>local-joiner.js</code> ustaw <code>useRealProfile = true</code></li>
+                            <li>Sprawdź czy <code>profileName</code> odpowiada Twojemu profilowi Chrome</li>
+                            <li>Uruchom ponownie automatyzację</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> Błąd "node nie jest rozpoznany"</h3>
+                    <div class="faq-answer">
+                        <p><strong>Rozwiązanie:</strong></p>
+                        <ol>
+                            <li>Sprawdź czy Node.js jest zainstalowany: otwórz nowy Command Prompt</li>
+                            <li>Wpisz <code>node --version</code></li>
+                            <li>Jeśli nadal błąd, przeinstaluj Node.js z <a href="https://nodejs.org" target="_blank">nodejs.org</a></li>
+                            <li>Po instalacji uruchom nowy Command Prompt</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> Nie może dołączyć do spotkania</h3>
+                    <div class="faq-answer">
+                        <p><strong>Sprawdź:</strong></p>
+                        <ol>
+                            <li>Link do spotkania Teams jest poprawny</li>
+                            <li>Czas spotkania jest ustawiony w przyszłości</li>
+                            <li>Dane logowania Teams są poprawne</li>
+                            <li>Chrome ma dostęp do mikrofonu/kamery</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> Transkrypcja nie działa</h3>
+                    <div class="faq-answer">
+                        <p><strong>Sprawdź:</strong></p>
+                        <ol>
+                            <li>Google API Key jest poprawnie skonfigurowany</li>
+                            <li>Speech-to-Text API jest włączone w Google Cloud</li>
+                            <li>Mikrofon ma pozwolenia w Chrome</li>
+                            <li>W pliku CONFIG jest ustawiony <code>GOOGLE_API_KEY</code></li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> Firebase błędy uprawnień</h3>
+                    <div class="faq-answer">
+                        <p><strong>Rozwiązanie:</strong></p>
+                        <ol>
+                            <li>Sprawdź czy Firestore Database jest w trybie testowym</li>
+                            <li>Upewnij się że uwierzytelnianie Email/Password jest włączone</li>
+                            <li>Zweryfikuj konfigurację Firebase w <code>script.js</code></li>
+                            <li>Sprawdź czy klucze Firebase są poprawnie skopiowane</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3><i class="fas fa-question-circle"></i> Skrypt nie widzi zaplanowanych spotkań</h3>
+                    <div class="faq-answer">
+                        <p><strong>Sprawdź:</strong></p>
+                        <ol>
+                            <li>Plik <code>user-credentials.json</code> jest w folderze <code>meeting-joiner</code></li>
+                            <li>Konfiguracja Firebase w <code>local-joiner.js</code> jest poprawna</li>
+                            <li>Spotkania są zaplanowane na przyszły czas</li>
+                            <li>Status spotkań to "pending" w dashboardzie</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="download">
+        <div class="container">
+            <h2>📥 Pobierz i rozpocznij</h2>
+
+            <div class="download-cta">
+                <div class="download-content">
+                    <h3>Gotowy na automatyzację spotkań Teams?</h3>
+                    <p>Pobierz kompletny pakiet i rozpocznij oszczędzanie czasu już dziś!</p>
+
+                    <div class="download-buttons">
+                        <a href="https://github.com/0xjaqbek/teams/archive/refs/heads/main.zip" class="btn btn-primary btn-large">
+                            <i class="fas fa-download"></i>
+                            Pobierz Teams Automation
+                            <small>Kompletny pakiet ZIP</small>
+                        </a>
+
+                        <a href="https://github.com/0xjaqbek/teams" target="_blank" class="btn btn-secondary btn-large">
+                            <i class="fab fa-github"></i>
+                            Zobacz na GitHub
+                            <small>Kod źródłowy i issues</small>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="download-features">
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span>Pełna automatyzacja Teams</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span>Interface w języku polskim</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span>Transkrypcja na żywo</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span>Bezpieczne przechowywanie</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span>Gotowe skrypty instalacyjne</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span>Dokumentacja krok po kroku</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Teams Automation</h3>
+                    <p>Automatyzacja spotkań Microsoft Teams z obsługą polskiego interfejsu i transkrypcją na żywo.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Przydatne linki</h3>
+                    <ul>
+                        <li><a href="#installation">Instalacja</a></li>
+                        <li><a href="#setup">Konfiguracja</a></li>
+                        <li><a href="https://github.com/0xjaqbek/teams" target="_blank">GitHub</a></li>
+                        <li><a href="https://nodejs.org" target="_blank">Node.js</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Wymagania</h3>
+                    <ul>
+                        <li>Node.js 18+</li>
+                        <li>Google Chrome</li>
+                        <li>Konto Firebase (darmowe)</li>
+                        <li>Windows/macOS/Linux</li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Wsparcie</h3>
+                    <ul>
+                        <li><a href="https://firebase.google.com/docs" target="_blank">Dokumentacja Firebase</a></li>
+                        <li><a href="https://cloud.google.com/speech-to-text/docs" target="_blank">Google Speech API</a></li>
+                        <li><a href="https://github.com/0xjaqbek/teams/issues" target="_blank">Zgłoś problem</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Teams Meeting Automation. Projekt open source - użytkowanie na własną odpowiedzialność.</p>
+                <div class="footer-links">
+                    <a href="https://github.com/0xjaqbek/teams" target="_blank">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to top button -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
