@@ -1,46 +1,221 @@
-# Getting Started with Create React App
+# Teams Meeting Scheduler & Automation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+🤖 **Automated Teams meeting scheduler with Polish transcription support**
 
-## Available Scripts
+This project provides a complete solution for automatically joining Microsoft Teams meetings and recording Polish transcriptions in real-time.
 
-In the project directory, you can run:
+## ✨ Features
 
-### `npm start`
+- 🎯 **Automated Meeting Join** - Automatically joins Teams meetings at scheduled times
+- 🔐 **Web Dashboard** - User-friendly interface for scheduling meetings
+- 🎙️ **Polish Transcription** - Real-time transcription using Google Speech API
+- 🔄 **Background Scheduler** - Monitors and joins meetings automatically
+- 🌐 **Multi-User Support** - Firebase authentication and user management
+- 📱 **Manual Override** - Browser stays open for manual control
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 🚀 Quick Start
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Prerequisites
 
-### `npm test`
+- **Node.js 18+** - [Download here](https://nodejs.org/)
+- **Chrome Browser** - Latest version recommended
+- **Firebase Account** - For database and authentication
+- **Google Cloud Account** - For Speech-to-Text API (optional, for transcription)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Clone the Repository
 
-### `npm run build`
+```bash
+git clone <your-repo-url>
+cd teams-meeting-scheduler
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. Install Dependencies
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+# Install meeting joiner dependencies
+cd meeting-joiner
+npm install
+cd ..
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Install Firebase functions dependencies
+cd functions
+npm install
+cd ..
+```
 
-### `npm run eject`
+### 3. Firebase Setup
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. Create a new Firebase project at [https://console.firebase.google.com](https://console.firebase.google.com)
+2. Enable **Authentication** with Email/Password and Google providers
+3. Enable **Firestore Database**
+4. Get your Firebase config and update `web-dashboard/script.js`:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```javascript
+const firebaseConfig = {
+  apiKey: "your-api-key",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  // ... rest of config
+};
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### 4. Deploy Firebase Functions
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+# Login to Firebase
+firebase login
 
-## Learn More
+# Initialize project (if not done)
+firebase init
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Deploy functions
+firebase deploy --only functions
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 5. Configure Meeting Joiner
+
+Edit `meeting-joiner/local-joiner.js` and update the CONFIG section:
+
+```javascript
+const CONFIG = {
+  FIREBASE_PROJECT_ID: 'your-project-id',
+  FIREBASE_PRIVATE_KEY: 'your-firebase-private-key',
+  FIREBASE_CLIENT_EMAIL: 'your-firebase-client-email',
+  ENCRYPTION_KEY: 'your-encryption-key',
+  GOOGLE_API_KEY: 'your-google-api-key' // Optional, for transcription
+};
+```
+
+## 📖 Usage
+
+### Using the Web Dashboard
+
+1. Open `web-dashboard/index.html` in your browser
+2. **Sign up** or **Sign in** with your email
+3. **Schedule a meeting** with Teams link and time
+4. **Export credentials** using "Run Local Automation" button
+
+### Running Local Automation
+
+```bash
+cd meeting-joiner
+
+# Run background scheduler (monitors for scheduled meetings)
+node local-joiner.js schedule
+
+# Run single meeting test
+node local-joiner.js
+```
+
+## 🎙️ Transcription Setup (Optional)
+
+### Enable Google Speech API
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create new project or select existing
+3. Enable **Speech-to-Text API**
+4. Create **API Key**
+5. Add the API key to CONFIG in `local-joiner.js`
+
+### Transcription Features
+
+- **Real-time Polish transcription** during meetings
+- **1-minute upload intervals** to Firebase
+- **Live console display** of transcription
+- **No audio storage** (privacy-focused)
+
+## 🔧 Configuration Options
+
+### Chrome Profile Settings
+
+In `local-joiner.js`, you can configure which Chrome profile to use:
+
+```javascript
+// Use your real Chrome profile (with existing logins)
+let useRealProfile = true;
+
+// Select specific profile (Default, Profile 1, Profile 2, etc.)
+const profileName = 'Default';
+```
+
+## 📁 Project Structure
+
+```
+teams-meeting-scheduler/
+├── web-dashboard/          # Web interface for scheduling
+│   ├── index.html         # Main dashboard page
+│   ├── script.js          # Frontend logic
+│   └── style.css          # Dashboard styling
+├── meeting-joiner/         # Local automation scripts
+│   ├── local-joiner.js    # Main automation script
+│   ├── index.js           # GitHub Actions version
+│   └── package.json       # Dependencies
+├── functions/              # Firebase Cloud Functions
+│   ├── src/index.ts       # Backend API
+│   └── package.json       # Function dependencies
+├── firestore.rules        # Database security rules
+├── firestore.indexes.json # Database indexes
+└── README.md              # This file
+```
+
+## 🚀 Advanced Usage
+
+### Background Automation
+
+The scheduler runs continuously and:
+- Monitors for scheduled meetings every 30 seconds
+- Automatically joins meetings at the right time
+- Prevents duplicate joins with collision detection
+- Updates meeting status in real-time
+
+### Polish Language Support
+
+The automation handles Polish Teams interface:
+- "Kontynuuj w tej przeglądarce" (Continue in this browser)
+- "Kontynuuj bez audio lub wideo" (Continue without audio or video)
+- "Dołącz teraz" (Join now)
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**Chrome doesn't open with my account:**
+- Set `useRealProfile = true` in `local-joiner.js`
+- Make sure to close all Chrome windows before running
+- Check the `profileName` matches your Chrome profile
+
+**Meeting join fails:**
+- Verify Teams meeting link is valid
+- Check if Teams requires sign-in
+- Ensure Chrome can access the meeting URL
+
+**Transcription not working:**
+- Verify Google API key is valid
+- Check Speech-to-Text API is enabled
+- Grant microphone/screen sharing permissions
+
+### Debug Logs
+
+Check the logs directory for screenshots and debug info:
+```
+meeting-joiner/logs/
+├── local-meeting-log-YYYY-MM-DD.txt
+├── step1-initial-page.png
+├── step2-sign-in.png
+└── ...
+```
+
+## 📄 License
+
+This project is for educational purposes. Please ensure compliance with your organization's policies when using automated meeting tools.
+
+## ⚠️ Important Notes
+
+- **Respect Privacy**: Only use transcription with proper permissions
+- **Meeting Policies**: Ensure automated joining complies with your organization's rules
+- **Rate Limits**: Google Speech API has usage limits
+- **Security**: Never commit credentials or API keys to version control
+
+---
+
+**Happy Automating!** 🎉

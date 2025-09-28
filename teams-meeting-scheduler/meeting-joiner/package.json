@@ -9,9 +9,12 @@
     "test": "echo 'No tests configured'"
   },
   "dependencies": {
-    "puppeteer": "^21.11.0",
+    "@google-cloud/speech": "^7.2.0",
+    "crypto": "^1.0.1",
     "firebase-admin": "^11.8.0",
-    "crypto": "^1.0.1"
+    "puppeteer": "^21.11.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
   },
   "devDependencies": {
     "@types/node": "^18.15.13"

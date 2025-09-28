@@ -110,3 +110,38 @@ local-joiner-config.js
 # Meeting screenshots and recordings
 screenshots/
 recordings/
+
+# Chrome automation profiles and temporary data
+/meeting-joiner/chrome-profile-automation/
+/meeting-joiner/temp-chrome-profile/
+/meeting-joiner/temp-chrome-profile-with-account/
+
+# User credentials and sensitive data (NEVER COMMIT THESE)
+/meeting-joiner/user-credentials.json
+*-credentials.json
+*-credentials.js
+
+# Meeting automation logs and debugging
+/meeting-joiner/logs/
+*.png
+*.jpg
+*.jpeg
+step*.png
+debug-*.png
+
+# Firebase and Google API keys (NEVER COMMIT THESE)
+firebase-config.json
+google-service-account.json
+/functions/.env
+/functions/serviceAccountKey.json
+
+# Local environment settings
+.claude/settings.local.json
+.claude/
+
+# Personal configuration files
+config.local.js
+local-config.json
+
+# Windows Chrome profile copies
+temp-chrome-*/
