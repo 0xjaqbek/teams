@@ -738,31 +738,60 @@ function updateTerminalDemo(version) {
 }
 
 function updateDownloadLinks(version) {
-    // You can add logic here to show different download buttons
-    // or instructions based on the selected version
-
     const downloadSection = document.querySelector('#download');
+
+    // Remove existing version notes
+    const existingNotes = downloadSection?.querySelectorAll('.version-note');
+    existingNotes?.forEach(note => note.remove());
+
     if (downloadSection && version === 'local') {
         // Add special note for local version
-        let localNote = downloadSection.querySelector('.local-version-note');
-        if (!localNote) {
-            localNote = document.createElement('div');
-            localNote.className = 'local-version-note';
-            localNote.style.cssText = `
-                background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-                color: white;
-                padding: 20px;
-                border-radius: 12px;
-                margin-bottom: 20px;
-                text-align: center;
-            `;
-            localNote.innerHTML = `
-                <h3><i class="fas fa-star"></i> Local Version Selected</h3>
-                <p>You're using the simplified local version! No Firebase setup required.</p>
-                <p><strong>Quick Start:</strong> Download → Install Node.js → Run <code>node local-joiner.js dashboard</code></p>
-            `;
-            downloadSection.insertBefore(localNote, downloadSection.firstChild);
-        }
+        const localNote = document.createElement('div');
+        localNote.className = 'version-note local-version-note';
+        localNote.style.cssText = `
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        `;
+        localNote.innerHTML = `
+            <h3><i class="fas fa-star"></i> Local Version Selected</h3>
+            <p>You're using the simplified local version! No Firebase setup required.</p>
+            <p><strong>Quick Start:</strong> Download → Install Node.js → Run <code>node local-joiner.js dashboard</code></p>
+            <div style="margin-top: 15px;">
+                <a href="https://github.com/0xjaqbek/teams/archive/refs/heads/optional-firebase-local-storage.zip"
+                   style="background: rgba(255,255,255,0.2); color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
+                    <i class="fas fa-download"></i> Download Local Version ZIP
+                </a>
+            </div>
+        `;
+        downloadSection.insertBefore(localNote, downloadSection.firstChild);
+    } else if (downloadSection && version === 'firebase') {
+        // Add special note for Firebase version
+        const firebaseNote = document.createElement('div');
+        firebaseNote.className = 'version-note firebase-version-note';
+        firebaseNote.style.cssText = `
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        `;
+        firebaseNote.innerHTML = `
+            <h3><i class="fas fa-cloud"></i> Firebase Version Selected</h3>
+            <p>You're using the full-featured Firebase version with cloud capabilities.</p>
+            <p><strong>Setup Required:</strong> Download → Install Node.js → Configure Firebase → Deploy</p>
+            <div style="margin-top: 15px;">
+                <a href="https://github.com/0xjaqbek/teams/archive/refs/heads/main.zip"
+                   style="background: rgba(255,255,255,0.2); color: white; padding: 12px 25px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
+                    <i class="fas fa-download"></i> Download Firebase Version ZIP
+                </a>
+            </div>
+        `;
+        downloadSection.insertBefore(firebaseNote, downloadSection.firstChild);
     }
 }
 
