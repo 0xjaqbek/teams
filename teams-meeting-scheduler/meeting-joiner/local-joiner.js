@@ -1021,8 +1021,36 @@ async function joinTeamsMeeting(meeting) {
                 log('🎉 Successfully in meeting!');
                 break;
               } else {
-                log('📋 May have reached prejoin screen, will try again...');
-                await page.waitForTimeout(2000);
+                // If this was the channel banner button, specifically look for prejoin button
+                if (selector === 'button[data-tid="channel-ongoing-meeting-banner-join-button"]') {
+                  log('📋 Clicked channel banner, now looking for prejoin "Join now" button...');
+                  await page.waitForTimeout(3000); // Wait for prejoin screen to load
+
+                  // Specifically look for prejoin join button
+                  const prejoinButton = await page.$('button[data-tid="prejoin-join-button"]');
+                  if (prejoinButton) {
+                    log('🎯 Found prejoin "Join now" button, clicking...');
+                    await prejoinButton.click();
+                    log('✅ Clicked prejoin join button!');
+                    await page.waitForTimeout(5000); // Wait for meeting to load
+                    await page.screenshot({ path: path.join(logsDir, `step6-prejoin-clicked.png`) });
+
+                    // Check again if we're in meeting
+                    const nowInMeeting = await page.$('[data-tid="toggle-mute"], [data-tid="toggle-video"], .calling-screen');
+                    if (nowInMeeting) {
+                      joined = true;
+                      log('🎉 Successfully joined meeting via prejoin!');
+                      break;
+                    } else {
+                      log('⚠️  Still not in meeting after prejoin click');
+                    }
+                  } else {
+                    log('⚠️  No prejoin button found after channel banner click');
+                  }
+                } else {
+                  log('📋 May have reached prejoin screen, will try again...');
+                  await page.waitForTimeout(2000);
+                }
                 break; // Break inner loop to try all selectors again
               }
             }
