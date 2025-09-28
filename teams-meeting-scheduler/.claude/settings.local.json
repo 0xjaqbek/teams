@@ -9,7 +9,9 @@
       "Bash(firebase deploy:*)",
       "Bash(firebase functions:log:*)",
       "Bash(firebase functions:delete:*)",
-      "Read(//d/teams/.github/workflows/**)"
+      "Read(//d/teams/.github/workflows/**)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

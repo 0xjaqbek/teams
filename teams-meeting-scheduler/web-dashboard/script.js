@@ -135,9 +135,9 @@ function showAuthPrompt() {
     authOverlay.id = 'authOverlay';
     authOverlay.innerHTML = `
         <div class="auth-prompt">
-            <h2><i class="fas fa-lock"></i> Authentication Required</h2>
-            <p>Please sign in to access the Teams automation dashboard.</p>
-            <button class="btn primary" onclick="openAuthModalFromOverlay()">Sign In</button>
+            <h2><i class="fas fa-lock"></i> Wymagane uwierzytelnienie</h2>
+            <p>Zaloguj się, aby uzyskać dostęp do panelu automatyzacji Teams.</p>
+            <button class="btn primary" onclick="openAuthModalFromOverlay()">Zaloguj się</button>
         </div>
     `;
     document.body.appendChild(authOverlay);
@@ -194,14 +194,14 @@ function switchAuthTab(tab) {
         signInTab.classList.add('active');
         signUpTab.classList.remove('active');
         confirmPasswordGroup.style.display = 'none';
-        authSubmitBtn.textContent = 'Sign In';
-        authModalTitle.textContent = 'Sign In';
+        authSubmitBtn.textContent = 'Zaloguj się';
+        authModalTitle.textContent = 'Zaloguj się';
     } else {
         signUpTab.classList.add('active');
         signInTab.classList.remove('active');
         confirmPasswordGroup.style.display = 'block';
-        authSubmitBtn.textContent = 'Sign Up';
-        authModalTitle.textContent = 'Sign Up';
+        authSubmitBtn.textContent = 'Zarejestruj się';
+        authModalTitle.textContent = 'Zarejestruj się';
     }
 }
 
@@ -209,7 +209,7 @@ async function handleAuthSubmit() {
     const email = document.getElementById('authEmail').value;
     const password = document.getElementById('authPassword').value;
     const confirmPassword = document.getElementById('authConfirmPassword').value;
-    const isSignUp = document.querySelector('.auth-tab.active').textContent === 'Sign Up';
+    const isSignUp = document.querySelector('.auth-tab.active').textContent === 'Zarejestruj się';
     const errorDiv = document.getElementById('authError');
 
     try {
@@ -217,15 +217,15 @@ async function handleAuthSubmit() {
 
         if (isSignUp) {
             if (password !== confirmPassword) {
-                throw new Error('Passwords do not match');
+                throw new Error('Hasła nie są zgodne');
             }
             if (password.length < 6) {
-                throw new Error('Password must be at least 6 characters');
+                throw new Error('Hasło musi mieć co najmniej 6 znaków');
             }
 
             const result = await auth.createUserWithEmailAndPassword(email, password);
             logToTerminal(`User account created: ${email}`, 'success');
-            showToast('Account created successfully!', 'success');
+            showToast('Konto utworzone pomyślnie!', 'success');
 
             // Create user profile
             await createUserProfile(result.user);
@@ -233,7 +233,7 @@ async function handleAuthSubmit() {
         } else {
             await auth.signInWithEmailAndPassword(email, password);
             logToTerminal(`User signed in: ${email}`, 'success');
-            showToast('Signed in successfully!', 'success');
+            showToast('Zalogowano pomyślnie!', 'success');
         }
 
         // Small delay to ensure authentication state change completes
@@ -261,7 +261,7 @@ async function signInWithGoogle() {
         const provider = new firebase.auth.GoogleAuthProvider();
         const result = await auth.signInWithPopup(provider);
         logToTerminal(`User signed in with Google: ${result.user.email}`, 'success');
-        showToast('Signed in with Google!', 'success');
+        showToast('Zalogowano przez Google!', 'success');
 
         // Create user profile if new user
         await createUserProfile(result.user);
@@ -290,9 +290,9 @@ async function signInWithGoogle() {
 async function signOut() {
     try {
         await auth.signOut();
-        showToast('Signed out successfully', 'info');
+        showToast('Wylogowano pomyślnie', 'info');
     } catch (error) {
-        showToast('Error signing out: ' + error.message, 'error');
+        showToast('Błąd podczas wylogowywania: ' + error.message, 'error');
     }
 }
 
@@ -354,7 +354,7 @@ function populateProfileForm() {
 
 function openProfileSettings() {
     if (!currentUser) {
-        showToast('Please sign in to access profile settings', 'warning');
+        showToast('Zaloguj się, aby uzyskać dostęp do ustawień profilu', 'warning');
         openAuthModal();
         return;
     }
@@ -365,7 +365,7 @@ function openProfileSettings() {
 
 async function saveProfile() {
     if (!currentUser) {
-        showToast('Please sign in to save profile', 'error');
+        showToast('Zaloguj się, aby zapisać profil', 'error');
         return;
     }
 
@@ -401,7 +401,7 @@ async function saveProfile() {
             await currentUser.updateProfile({ displayName: displayName });
         }
 
-        showToast('Profile updated successfully!', 'success');
+        showToast('Profil zaktualizowany pomyślnie!', 'success');
         logToTerminal('User profile saved', 'success');
         closeModal('profileModal');
 
@@ -410,7 +410,7 @@ async function saveProfile() {
 
     } catch (error) {
         console.error('Profile save error:', error);
-        showToast('Error saving profile: ' + error.message, 'error');
+        showToast('Błąd podczas zapisywania profilu: ' + error.message, 'error');
         logToTerminal(`Error saving profile: ${error.message}`, 'error');
     }
 }
@@ -433,12 +433,12 @@ function decrypt(encryptedText) {
 // Quick Actions
 async function runLocalAutomation() {
     if (!currentUser || !userProfile) {
-        showToast('Please sign in and configure your profile first', 'warning');
+        showToast('Zaloguj się i skonfiguruj najpierw swój profil', 'warning');
         return;
     }
 
     if (!userProfile.teamsEmail || !userProfile.teamsPassword) {
-        showToast('Please configure your Teams credentials in Profile Settings', 'warning');
+        showToast('Skonfiguruj dane logowania Teams w Ustawieniach profilu', 'warning');
         openProfileSettings();
         return;
     }
@@ -557,11 +557,11 @@ pause`;
 
         logToTerminal('✅ User credentials and automation starter exported', 'success');
         logToTerminal('📥 Downloaded: user-credentials.json + PowerShell + batch files', 'info');
-        showToast('Automation files ready! Check your Downloads folder.', 'success');
+        showToast('Pliki automatyzacji gotowe! Sprawdź folder Pobrane.', 'success');
 
     } catch (error) {
         logToTerminal(`❌ Error exporting credentials: ${error.message}`, 'error');
-        showToast('Failed to export credentials: ' + error.message, 'error');
+        showToast('Niepowodzenie eksportu danych: ' + error.message, 'error');
     }
 }
 
@@ -725,7 +725,7 @@ async function triggerGitHubAction() {
         logToTerminal('Demo mode: GitHub Action trigger simulated', 'info');
     }
 
-    updateStatus('Ready', 'success');
+    updateStatus('Gotowy', 'success');
 }
 
 function openMeetingScheduler() {
@@ -799,7 +799,7 @@ async function loadMeetings() {
         container.innerHTML = `
             <div class="loading">
                 <i class="fas fa-exclamation-triangle"></i>
-                <span>Unable to load meetings. Please check your permissions.</span>
+                <span>Nie można załadować spotkań. Sprawdź uprawnienia.</span>
             </div>
         `;
     }
@@ -812,7 +812,7 @@ function displayMeetings(meetingsList) {
         container.innerHTML = `
             <div class="loading">
                 <i class="fas fa-calendar"></i>
-                <span>No meetings scheduled</span>
+                <span>Brak zaplanowanych spotkań</span>
             </div>
         `;
         return;
@@ -826,14 +826,14 @@ function displayMeetings(meetingsList) {
         return `
             <div class="meeting-card">
                 <div class="meeting-info">
-                    <h3>Teams Meeting</h3>
+                    <h3>Spotkanie Teams</h3>
                     <p><i class="fas fa-clock"></i> ${scheduledTime.toLocaleString()}</p>
                     <p><i class="fas fa-user"></i> ${meeting.teamsEmail || 'Unknown'}</p>
-                    <p><i class="fas fa-redo"></i> Retry ${meeting.retryCount || 0}/${meeting.maxRetries || 3}</p>
+                    <p><i class="fas fa-redo"></i> Próba ${meeting.retryCount || 0}/${meeting.maxRetries || 3}</p>
                 </div>
                 <div class="meeting-actions">
                     <span class="meeting-status status-${meeting.status}">${meeting.status}</span>
-                    <button class="btn-icon" onclick="deleteMeeting('${meeting.id}')" title="Delete Meeting">
+                    <button class="btn-icon" onclick="deleteMeeting('${meeting.id}')" title="Usuń spotkanie">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -844,13 +844,13 @@ function displayMeetings(meetingsList) {
 
 async function scheduleMeeting() {
     if (!currentUser) {
-        showToast('Please sign in to schedule meetings', 'warning');
+        showToast('Zaloguj się, aby planować spotkania', 'warning');
         openAuthModal();
         return;
     }
 
     if (!userProfile || !userProfile.teamsEmail || !userProfile.teamsPassword) {
-        showToast('Please configure your Teams credentials in Profile Settings first', 'warning');
+        showToast('Najpierw skonfiguruj dane logowania Teams w Ustawieniach profilu', 'warning');
         openProfileSettings();
         return;
     }
@@ -882,7 +882,7 @@ async function scheduleMeeting() {
         // Data is already encrypted from user profile
         await db.collection('meetings').add(meetingData);
 
-        showToast('Meeting scheduled successfully!', 'success');
+        showToast('Spotkanie zaplanowane pomyślnie!', 'success');
         logToTerminal('New meeting scheduled for ' + meetingData.scheduledTime.toLocaleString(), 'success');
 
         closeModal('scheduleMeetingModal');
@@ -891,13 +891,13 @@ async function scheduleMeeting() {
         loadStats();
 
     } catch (error) {
-        showToast('Failed to schedule meeting: ' + error.message, 'error');
+        showToast('Nie udało się zaplanować spotkania: ' + error.message, 'error');
         logToTerminal('Error scheduling meeting: ' + error.message, 'error');
     }
 }
 
 async function deleteMeeting(meetingId) {
-    if (!confirm('Are you sure you want to delete this meeting?')) {
+    if (!confirm('Czy na pewno chcesz usunąć to spotkanie?')) {
         return;
     }
 
@@ -908,12 +908,12 @@ async function deleteMeeting(meetingId) {
 
     try {
         await db.collection('meetings').doc(meetingId).delete();
-        showToast('Meeting deleted successfully', 'success');
+        showToast('Spotkanie usunięte pomyślnie', 'success');
         logToTerminal('Meeting deleted: ' + meetingId, 'info');
         loadMeetings();
         loadStats();
     } catch (error) {
-        showToast('Failed to delete meeting: ' + error.message, 'error');
+        showToast('Nie udało się usunąć spotkania: ' + error.message, 'error');
         logToTerminal('Error deleting meeting: ' + error.message, 'error');
     }
 }
@@ -1045,7 +1045,7 @@ async function loadRecentActivity() {
         container.innerHTML = `
             <div class="loading">
                 <i class="fas fa-history"></i>
-                <span>No recent activity</span>
+                <span>Brak ostatniej aktywności</span>
             </div>
         `;
     }
@@ -1058,7 +1058,7 @@ function displayActivity(activities) {
         container.innerHTML = `
             <div class="loading">
                 <i class="fas fa-history"></i>
-                <span>No recent activity</span>
+                <span>Brak ostatniej aktywności</span>
             </div>
         `;
         return;
@@ -1103,7 +1103,7 @@ function displayActivity(activities) {
 // Logs
 async function loadLogs() {
     const container = document.getElementById('logsContainer');
-    container.innerHTML = '<div class="log-loading"><i class="fas fa-spinner fa-spin"></i><span>Loading logs...</span></div>';
+    container.innerHTML = '<div class="log-loading"><i class="fas fa-spinner fa-spin"></i><span>Ładowanie logów...</span></div>';
 
     // Simulate loading logs (in real app, this would fetch from server/GitHub)
     setTimeout(() => {
@@ -1135,7 +1135,7 @@ function refreshMeetings() {
     loadMeetings();
     loadStats();
     loadRecentActivity();
-    showToast('Data refreshed', 'success');
+    showToast('Dane odświeżone', 'success');
 }
 
 function updateStatus(status, type) {
@@ -1205,6 +1205,10 @@ function clearTerminal() {
     `;
 }
 
+function openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
+}
+
 function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('active');
 }
@@ -1216,10 +1220,10 @@ function timeAgo(date) {
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
 
-    if (days > 0) return `${days}d ago`;
-    if (hours > 0) return `${hours}h ago`;
-    if (minutes > 0) return `${minutes}m ago`;
-    return 'Just now';
+    if (days > 0) return `${days} dni temu`;
+    if (hours > 0) return `${hours} godz temu`;
+    if (minutes > 0) return `${minutes} min temu`;
+    return 'Właśnie teraz';
 }
 
 // Keyboard shortcuts
@@ -1239,7 +1243,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 // Initialize status
-updateStatus('Ready', 'success');
+updateStatus('Gotowy', 'success');
 
 // Test function to verify authentication and permissions
 async function testFirebaseConnection() {

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teams Meeting Automation Dashboard</title>
+    <title>Panel Automatyzacji Spotkań Teams</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,13 +23,13 @@
                         <span id="userDisplayName">User Name</span>
                         <small id="userEmail">user@example.com</small>
                     </div>
-                    <button class="btn-icon" onclick="signOut()" title="Sign Out">
+                    <button class="btn-icon" onclick="signOut()" title="Wyloguj">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </div>
                 <div class="status-badge" id="statusBadge">
                     <i class="fas fa-circle"></i>
-                    <span>Ready</span>
+                    <span>Gotowy</span>
                 </div>
             </div>
         </header>
@@ -38,32 +38,32 @@
         <main class="main-content">
             <!-- Quick Actions -->
             <section class="quick-actions">
-                <h2>Quick Actions</h2>
+                <h2>Szybkie akcje</h2>
                 <div class="action-grid">
                     <button class="action-btn primary" onclick="runLocalAutomation()">
-                        <i class="fas fa-play"></i>
-                        <span>Run Local Automation</span>
-                        <small>Test with visible browser</small>
-                    </button>
-                    <button class="action-btn secondary" onclick="triggerGitHubAction()">
-                        <i class="fas fa-cloud"></i>
-                        <span>Trigger GitHub Action</span>
-                        <small>Run automation in cloud</small>
+                        <i class="fas fa-download"></i>
+                        <span>Pobierz plik konfiguracyjny</span>
+                        <small>Utworzy plik user-credentials.json do uruchomienia automatyzacji na komputerze</small>
                     </button>
                     <button class="action-btn tertiary" onclick="openMeetingScheduler()">
                         <i class="fas fa-calendar-plus"></i>
-                        <span>Schedule Meeting</span>
-                        <small>Add new meeting to join</small>
+                        <span>Zaplanuj spotkanie</span>
+                        <small>Dodaj nowe spotkanie Teams do automatycznego dołączenia</small>
                     </button>
                     <button class="action-btn success" onclick="openProfileSettings()">
                         <i class="fas fa-user-cog"></i>
-                        <span>Profile Settings</span>
-                        <small>Manage Teams credentials</small>
+                        <span>Ustawienia konta Teams</span>
+                        <small>Wprowadź email i hasło do konta Microsoft Teams</small>
                     </button>
                     <button class="action-btn quaternary" onclick="viewLogs()">
                         <i class="fas fa-file-text"></i>
-                        <span>View Logs</span>
-                        <small>Check automation history</small>
+                        <span>Historia aktywności</span>
+                        <small>Zobacz logi z automatycznego dołączania do spotkań</small>
+                    </button>
+                    <button class="action-btn info" onclick="openModal('instructionsModal')">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Instrukcja obsługi</span>
+                        <small>Przewodnik krok po kroku dla użytkowników</small>
                     </button>
                 </div>
             </section>
@@ -71,8 +71,8 @@
             <!-- Meeting Management -->
             <section class="meeting-section">
                 <div class="section-header">
-                    <h2>Scheduled Meetings</h2>
-                    <button class="btn-icon" onclick="refreshMeetings()">
+                    <h2>Zaplanowane spotkania</h2>
+                    <button class="btn-icon" onclick="refreshMeetings()" title="Odśwież listę spotkań">
                         <i class="fas fa-refresh"></i>
                     </button>
                 </div>
@@ -80,41 +80,41 @@
                     <!-- Meetings will be loaded here -->
                     <div class="loading">
                         <i class="fas fa-spinner fa-spin"></i>
-                        <span>Loading meetings...</span>
+                        <span>Ładowanie spotkań...</span>
                     </div>
                 </div>
             </section>
 
             <!-- Statistics -->
             <section class="stats-section">
-                <h2>Automation Statistics</h2>
+                <h2>Statystyki automatyzacji</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <i class="fas fa-check-circle"></i>
                         <div class="stat-content">
                             <span class="stat-number" id="successCount">0</span>
-                            <span class="stat-label">Successful Joins</span>
+                            <span class="stat-label">Udane dołączenia</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-clock"></i>
                         <div class="stat-content">
                             <span class="stat-number" id="pendingCount">0</span>
-                            <span class="stat-label">Pending Meetings</span>
+                            <span class="stat-label">Oczekujące spotkania</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-exclamation-triangle"></i>
                         <div class="stat-content">
                             <span class="stat-number" id="failedCount">0</span>
-                            <span class="stat-label">Failed Attempts</span>
+                            <span class="stat-label">Nieudane próby</span>
                         </div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-calendar"></i>
                         <div class="stat-content">
                             <span class="stat-number" id="todayCount">0</span>
-                            <span class="stat-label">Today's Meetings</span>
+                            <span class="stat-label">Dzisiejsze spotkania</span>
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
 
             <!-- Recent Activity -->
             <section class="activity-section">
-                <h2>Recent Activity</h2>
+                <h2>Ostatnia aktywność</h2>
                 <div class="activity-feed" id="activityFeed">
                     <!-- Activity items will be loaded here -->
                 </div>
@@ -134,47 +134,47 @@
         <div class="modal" id="scheduleMeetingModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Schedule New Meeting</h3>
+                    <h3>Zaplanuj nowe spotkanie</h3>
                     <button class="modal-close" onclick="closeModal('scheduleMeetingModal')">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <form class="modal-body" id="meetingForm">
                     <div class="form-group">
-                        <label>Meeting Link</label>
+                        <label>Link do spotkania Teams</label>
                         <input type="url" id="meetingLink" placeholder="https://teams.microsoft.com/l/meetup-join/..." required>
                     </div>
                     <div class="teams-credentials-info">
                         <i class="fas fa-info-circle"></i>
-                        <span>Teams credentials will be automatically loaded from your profile</span>
+                        <span>Dane logowania do Teams zostaną automatycznie wczytane z Twojego profilu</span>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Date</label>
+                            <label>Data</label>
                             <input type="date" id="meetingDate" required>
                         </div>
                         <div class="form-group">
-                            <label>Time</label>
+                            <label>Godzina</label>
                             <input type="time" id="meetingTime" required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Max Retries</label>
+                            <label>Maksymalne próby</label>
                             <input type="number" id="maxRetries" value="3" min="1" max="10">
                         </div>
                         <div class="form-group">
-                            <label>Auto-Join</label>
+                            <label>Automatyczne dołączenie</label>
                             <select id="autoJoin">
-                                <option value="true">Enabled</option>
-                                <option value="false">Disabled</option>
+                                <option value="true">Włączone</option>
+                                <option value="false">Wyłączone</option>
                             </select>
                         </div>
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button class="btn secondary" onclick="closeModal('scheduleMeetingModal')">Cancel</button>
-                    <button class="btn primary" onclick="scheduleMeeting()">Schedule Meeting</button>
+                    <button class="btn secondary" onclick="closeModal('scheduleMeetingModal')">Anuluj</button>
+                    <button class="btn primary" onclick="scheduleMeeting()">Zaplanuj spotkanie</button>
                 </div>
             </div>
         </div>
@@ -183,7 +183,7 @@
         <div class="modal" id="logsModal">
             <div class="modal-content large">
                 <div class="modal-header">
-                    <h3>Automation Logs</h3>
+                    <h3>Logi automatyzacji</h3>
                     <button class="modal-close" onclick="closeModal('logsModal')">
                         <i class="fas fa-times"></i>
                     </button>
@@ -192,7 +192,7 @@
                     <div class="logs-container" id="logsContainer">
                         <div class="log-loading">
                             <i class="fas fa-spinner fa-spin"></i>
-                            <span>Loading logs...</span>
+                            <span>Ładowanie logów...</span>
                         </div>
                     </div>
                 </div>
@@ -203,44 +203,44 @@
         <div class="modal" id="authModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 id="authModalTitle">Sign In</h3>
+                    <h3 id="authModalTitle">Zaloguj się</h3>
                     <button class="modal-close" onclick="closeModal('authModal')">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="auth-tabs">
-                        <button class="auth-tab active" onclick="switchAuthTab('signin')">Sign In</button>
-                        <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+                        <button class="auth-tab active" onclick="switchAuthTab('signin')">Zaloguj się</button>
+                        <button class="auth-tab" onclick="switchAuthTab('signup')">Zarejestruj się</button>
                     </div>
 
                     <form id="authForm">
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" id="authEmail" placeholder="your.email@example.com" required>
+                            <input type="email" id="authEmail" placeholder="twoj.email@example.com" required>
                         </div>
                         <div class="form-group">
-                            <label>Password</label>
-                            <input type="password" id="authPassword" placeholder="Password" required>
+                            <label>Hasło</label>
+                            <input type="password" id="authPassword" placeholder="Hasło" required>
                         </div>
                         <div class="form-group" id="confirmPasswordGroup" style="display: none;">
-                            <label>Confirm Password</label>
-                            <input type="password" id="authConfirmPassword" placeholder="Confirm Password">
+                            <label>Potwierdź hasło</label>
+                            <input type="password" id="authConfirmPassword" placeholder="Potwierdź hasło">
                         </div>
 
                         <div class="auth-actions">
                             <button type="submit" class="btn primary full-width" id="authSubmitBtn">
-                                Sign In
+                                Zaloguj się
                             </button>
                         </div>
 
                         <div class="auth-divider">
-                            <span>or</span>
+                            <span>lub</span>
                         </div>
 
                         <button type="button" class="btn secondary full-width" onclick="signInWithGoogle()">
                             <i class="fab fa-google"></i>
-                            Continue with Google
+                            Kontynuuj z Google
                         </button>
                     </form>
 
@@ -253,18 +253,18 @@
         <div class="modal" id="profileModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Profile Settings</h3>
+                    <h3>Ustawienia profilu</h3>
                     <button class="modal-close" onclick="closeModal('profileModal')">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="profile-section">
-                        <h4><i class="fas fa-user"></i> Account Information</h4>
+                        <h4><i class="fas fa-user"></i> Informacje o koncie</h4>
                         <div class="profile-info">
                             <div class="form-group">
-                                <label>Display Name</label>
-                                <input type="text" id="profileDisplayName" placeholder="Your name">
+                                <label>Nazwa wyświetlana</label>
+                                <input type="text" id="profileDisplayName" placeholder="Twoje imię">
                             </div>
                             <div class="form-group">
                                 <label>Email</label>
@@ -274,24 +274,100 @@
                     </div>
 
                     <div class="profile-section">
-                        <h4><i class="fas fa-shield-alt"></i> Teams Credentials</h4>
+                        <h4><i class="fas fa-shield-alt"></i> Dane logowania Teams</h4>
                         <div class="credentials-info">
-                            <p><i class="fas fa-info-circle"></i> These credentials are encrypted and stored securely</p>
+                            <p><i class="fas fa-info-circle"></i> Te dane są szyfrowane i przechowywane bezpiecznie</p>
                         </div>
                         <div class="form-group">
-                            <label>Teams Email</label>
-                            <input type="email" id="profileTeamsEmail" placeholder="your.teams@company.com">
+                            <label>Email Teams</label>
+                            <input type="email" id="profileTeamsEmail" placeholder="twoj.email@firma.com">
                         </div>
                         <div class="form-group">
-                            <label>Teams Password</label>
-                            <input type="password" id="profileTeamsPassword" placeholder="Your Teams password">
-                            <small>This will be encrypted before storage</small>
+                            <label>Hasło Teams</label>
+                            <input type="password" id="profileTeamsPassword" placeholder="Twoje hasło Teams">
+                            <small>Hasło zostanie zaszyfrowane przed zapisaniem</small>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn secondary" onclick="closeModal('profileModal')">Cancel</button>
-                    <button class="btn primary" onclick="saveProfile()">Save Settings</button>
+                    <button class="btn secondary" onclick="closeModal('profileModal')">Anuluj</button>
+                    <button class="btn primary" onclick="saveProfile()">Zapisz ustawienia</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions Modal -->
+        <div class="modal" id="instructionsModal">
+            <div class="modal-content large">
+                <div class="modal-header">
+                    <h3>Instrukcja obsługi - krok po kroku</h3>
+                    <button class="modal-close" onclick="closeModal('instructionsModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="instructions-content">
+                        <div class="instruction-step">
+                            <h4><i class="fas fa-download"></i> Krok 1: Zainstaluj wymagane oprogramowanie</h4>
+                            <p><strong>A) Zainstaluj Node.js:</strong></p>
+                            <ul>
+                                <li>Przejdź na stronę <a href="https://nodejs.org" target="_blank">https://nodejs.org</a></li>
+                                <li>Pobierz wersję LTS (Long Term Support) - zalecana</li>
+                                <li>Uruchom pobrany plik i postępuj zgodnie z instrukcjami instalatora</li>
+                                <li>Po instalacji otwórz Command Prompt i wpisz <code>node --version</code> aby sprawdzić instalację</li>
+                            </ul>
+                            <p><strong>B) Zainstaluj Google Chrome:</strong></p>
+                            <ul>
+                                <li>Przejdź na stronę <a href="https://www.google.com/chrome" target="_blank">https://www.google.com/chrome</a></li>
+                                <li>Pobierz i zainstaluj najnowszą wersję Chrome</li>
+                                <li>Upewnij się, że masz konto Microsoft Teams w Chrome (zalecane)</li>
+                            </ul>
+                        </div>
+
+                        <div class="instruction-step">
+                            <h4><i class="fas fa-user-plus"></i> Krok 2: Załóż konto</h4>
+                            <p>Zaloguj się lub zarejestruj używając swojego adresu email. Możesz też skorzystać z konta Google.</p>
+                        </div>
+
+                        <div class="instruction-step">
+                            <h4><i class="fas fa-cog"></i> Krok 3: Ustaw dane do Teams</h4>
+                            <p>Kliknij "Ustawienia konta Teams" i wprowadź email oraz hasło do Microsoft Teams. Te dane są bezpiecznie szyfrowane.</p>
+                        </div>
+
+                        <div class="instruction-step">
+                            <h4><i class="fas fa-calendar-plus"></i> Krok 4: Zaplanuj spotkanie</h4>
+                            <p>Użyj przycisku "Zaplanuj spotkanie" aby dodać link do spotkania Teams wraz z datą i godziną.</p>
+                        </div>
+
+                        <div class="instruction-step">
+                            <h4><i class="fas fa-download"></i> Krok 5: Pobierz plik konfiguracyjny</h4>
+                            <p>Kliknij "Pobierz plik konfiguracyjny" aby utworzyć plik user-credentials.json z Twoimi ustawieniami.</p>
+                        </div>
+
+                        <div class="instruction-step">
+                            <h4><i class="fas fa-desktop"></i> Krok 6: Uruchom automatyzację na komputerze</h4>
+                            <p>Skopiuj pobrany plik do folderu meeting-joiner i uruchom automatyzację poleceniem:</p>
+                            <code>node local-joiner.js schedule</code>
+                        </div>
+
+                        <div class="instruction-step">
+                            <h4><i class="fas fa-check-circle"></i> Gotowe!</h4>
+                            <p>System będzie automatycznie dołączał do zaplanowanych spotkań Teams w odpowiednim czasie.</p>
+                        </div>
+
+                        <div class="instruction-note">
+                            <h4><i class="fas fa-info-circle"></i> Ważne informacje:</h4>
+                            <ul>
+                                <li>Upewnij się, że masz zainstalowany Node.js i Chrome</li>
+                                <li>Automatyzacja działa tylko gdy komputer jest włączony</li>
+                                <li>System automatycznie wykrywa polską wersję Teams</li>
+                                <li>Możesz monitorować postęp w sekcji "Historia aktywności"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn primary" onclick="closeModal('instructionsModal')">Rozumiem</button>
                 </div>
             </div>
         </div>
@@ -299,7 +375,7 @@
         <!-- Command Terminal -->
         <div class="terminal" id="terminal">
             <div class="terminal-header">
-                <span>Automation Terminal</span>
+                <span>Terminal automatyzacji</span>
                 <div class="terminal-controls">
                     <button onclick="clearTerminal()"><i class="fas fa-trash"></i></button>
                     <button onclick="toggleTerminal()"><i class="fas fa-minus"></i></button>
@@ -308,13 +384,13 @@
             <div class="terminal-body" id="terminalBody">
                 <div class="terminal-line">
                     <span class="prompt">teams-automation$</span>
-                    <span class="output">Ready for commands...</span>
+                    <span class="output">Gotowy do poleceń...</span>
                 </div>
             </div>
         </div>
 
         <!-- Floating Action Button -->
-        <button class="fab" onclick="toggleTerminal()" title="Toggle Terminal">
+        <button class="fab" onclick="toggleTerminal()" title="Przełącz terminal">
             <i class="fas fa-terminal"></i>
         </button>
     </div>
